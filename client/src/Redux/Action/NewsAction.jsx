@@ -42,15 +42,3 @@ export const GetJournalists =()=>{
 }
 }
 
-export const GetNews=()=>{
-return async(dispatch)=>{
-    try {
-        const res = await fetchData('/news',"get")
-        if (res) {
-            dispatch({ type: GET_ALL_NEWS, payload: res?.news });
-        }
-    } catch (error) {
-        console.error(error.message)
-    }
-}
-}

@@ -10,22 +10,21 @@ import { customStyles } from '../../common/common';
 
 const Register = () => {
   const {id} =useParams()
-  // console.log('params:id ', id);
   const {getmediaAdmin} = useSelector((state)=>state.NewsReducer)
   const {token} = useSelector((state)=>state.AuthenticationReducer)
-  // console.log('token: ', token);
   const [user, setUser] = useState([])
-  // console.log('user: ', user);
+
   const getJournalists =async()=>{
-    if(!isEmpty(token)){
       const res =await fetchData('/journalist','get',null,{Authorization:token})
       setUser(res?.user)
-    }
   } 
   
   useEffect(() => {
+    if(isEmpty(token)){
     getJournalists()
-  },[])
+    }
+  },[token])
+
   const navigate =useNavigate()
   const dispatch=useDispatch()
   const {currentUser,AuthFailure} = useSelector((state)=>state.AuthenticationReducer)
@@ -40,7 +39,7 @@ const Register = () => {
     });
 
     const roleChange=currentUser?.role ==="superAdmin"?"/admin":currentUser?.role==="mediaAdmin"?"/mediaAdmin" :currentUser?.role==="Journalist"?"/Journalist":"/login"
-    // console.log('roleChange: ', roleChange);
+  
     const inputs= [{
         "id": "name",
         "label": "User Name",
@@ -123,6 +122,7 @@ const handleValidation = (e) => {
       }
     }
 
+
 const handleChange = (e) => {
     const { name, value, type, id } = e.target;
     const numericValue = value.replace(/\D/g, "");
@@ -138,7 +138,6 @@ const handleChange = (e) => {
     ...getmediaAdmin,
     ...user
   ]
-  
   
   const filteredResult= filteredData?.find(admin=>admin?._id === id)
 

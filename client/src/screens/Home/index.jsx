@@ -51,6 +51,7 @@ const Home = () => {
     setSelectedCategory(data?.name);
     try {
       const res = await fetchData(`/mediaNews/${data?.id}`, 'get');
+      console.log('res: ', res);
       // setNewsData(res?.news || []);
       setFilteredNewsData(res?.news || []);
     } catch (error) {

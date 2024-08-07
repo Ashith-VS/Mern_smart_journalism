@@ -148,7 +148,7 @@ const getAllMediasName = async (req, res) => {
 const getAllMediasNews = async (req, res) => {
     try {
         const { id } = req.params
-        const news = await NewsData.find({ parent: id });
+        const news = await NewsData.find({ parent: id,newsStatus:"approved" });
         res.status(200).json({ news });
     } catch (error) {
         console.error(error);
