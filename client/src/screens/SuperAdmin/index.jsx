@@ -2,22 +2,40 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
 import Sidebar from '../../components/Sidebar'
 import Footer from '../../components/Footer'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import fetchData from '../../http/api'
+import { Link, useNavigate } from 'react-router-dom'
+import { GetMediaAdmins } from '../../Redux/Action/NewsAction'
+import { isEmpty } from 'lodash'
 
 
 const SuperAdmin = () => {
+  const navigate =useNavigate()
+  const dispatch=useDispatch()
+  const[journalist,setJournalist] = useState(null)
+
+  console.log('journalist: ', journalist);
     const {currentUser} = useSelector((state)=>state.AuthenticationReducer)
-    console.log('currentUser: ', currentUser);
-const[user,setUser]=useState([])
-    const getMediaAdmins=async()=>{
-      const res=await fetchData('/mediaAdmins',"get")
-      console.log('res: ', res);
-      setUser(res?.mediaAdmins)
-    }
+    const {getmediaAdmin} = useSelector((state)=>state.NewsReducer)
+    // console.log('getMediaAdmins: ', getmediaAdmin);
     useEffect(() => {
-    getMediaAdmins()
+    dispatch(GetMediaAdmins())
     }, [])
+
+    const handleDelete=(id)=>{
+
+    }
+
+    const getJournalists=async(id)=>{
+    const res= await fetchData(`/journalist/${id}`,"get")
+setJournalist(res?.user)
+    }
+
+    const handleShow=(id)=>{
+      getJournalists(id)
+    }
+
+
     
   return (
     <div>
@@ -39,23 +57,52 @@ const[user,setUser]=useState([])
                     </tr>
                   </thead>
                   <tbody>
-                    {user.map((madmin, index) => (
-                    
-                    <tr >
+                    {getmediaAdmin?.map((madmin, index) =>{ 
+                      return(
+                    <tr key={index} onClick={()=>handleShow(madmin?._id)} >
                       <td>{madmin.name}</td>
                       <td>{madmin.email}</td>
                       <td>{madmin.mobile}</td>
                       <td>
                         <button 
-                          className="btn btn-primary btn-sm" 
-                          onClick={() => handleEdit("event.id")}
+                          className="btn btn-secondary btn-sm" 
+                          onClick={() => handleDelete(madmin?._id)}
+                          // onClick={() => navigate(`/register/${madmin._id}`)}
                         >
-                          Edit
+                          Delete
                         </button>
                       </td>
-                    </tr>))}
+                    </tr>)})}
                   </tbody>
                 </table>
+
+                {!isEmpty(journalist) ? (
+                <div className="mt-4">
+                  <h4>Journalist Details</h4>
+                  <table className="table table-striped table-bordered">
+                    <thead className="table-dark">
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {journalist?.map((item)=>{
+                        return(
+                      <tr key={item?._id}>
+                        <td>{item?.name}</td>
+                        <td>{item?.email}</td>
+                        <td>{item?.mobile}</td>
+                      </tr>)})}
+                    </tbody>
+                  </table>
+                </div>
+              ):journalist !== null && (
+                <p className="mt-5" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  No Journalist found
+                </p>
+              )}
               </div>
             </div>
           </div>

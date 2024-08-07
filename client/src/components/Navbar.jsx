@@ -6,19 +6,20 @@ import { currentUserAuth } from '../Redux/Action/AuthenticationAction';
 import profileIcon from "../assets/images/profile.png";
 import { isEmpty } from 'lodash';
 import { GET_CURRENT_USER } from '../common/constant';
+
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch=useDispatch()
   const {token} =useSelector((state)=>state.AuthenticationReducer)
-  
   const [showDropdown, setShowDropdown] = useState(false);
   const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
-  console.log('currentUser: ', currentUser);
   
 const getCurrentUser=async()=>{
   try {
+  if(token){
     const res = await fetchData('/currentuser','get',null,{Authorization:token})
     dispatch(currentUserAuth(res?.user))
+  }
   } catch (error) {
     console.error(error)
   }
@@ -26,19 +27,9 @@ const getCurrentUser=async()=>{
 
 useEffect(() => {
     getCurrentUser()
-}, [])
+}, [token])
 
-// useEffect(()=>{
-//   if(currentUser?.role=== "superAdmin") {
-//     navigate("/admin")
-//   }else if(currentUser?.role=== "mediaAdmin"){
-//     navigate("/mediaAdmin")
-//   }else if(currentUser?.role=== "Journalist"){
-//     navigate("/journalist")
-//   }else{
-//     navigate("/")
-//   }
-// },[])
+
 
 const handleLogout=()=>{
   localStorage.clear();
@@ -47,7 +38,7 @@ const handleLogout=()=>{
 }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-custom gradient" style={{padding:"30px",background: "linear-gradient(to right, #9191a0, #8d9396)"}}>
+    <nav className="navbar navbar-expand-lg navbar-custom gradient" style={{padding:"30px",background:"#96C9F4"}}>
       <div className="container">
         <Link className="navbar-brand" to="/">
          News
@@ -71,6 +62,12 @@ const handleLogout=()=>{
                 About
               </Link>
             </li>
+            {currentUser?.role === 'user' &&
+            <li className="nav-item">
+              <Link className="nav-link" to="/saved">
+                Saved News
+              </Link>
+            </li>}
             <li className="nav-item">
               <img
                 src={profileIcon}

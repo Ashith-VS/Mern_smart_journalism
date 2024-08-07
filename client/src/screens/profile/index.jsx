@@ -1,12 +1,22 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Footer from '../../components/Footer'
 import Navbar from '../../components/Navbar'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { GET_CURRENT_USER } from '../../common/constant'
 
 const Profile = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
     const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
     // console.log('currentUser: ', currentUser);
+    const handleLogout=()=>{
+      localStorage.clear();
+      dispatch({type:GET_CURRENT_USER, payload:null})
+      navigate('/')
+    }
+    
+
   return (
     <div>
     <Navbar/>
@@ -31,6 +41,7 @@ const Profile = () => {
                 <p className="card-text"><strong>Email :</strong>  {currentUser?.email}</p>
                 <p className="card-text"><strong>Phone :</strong>  {currentUser?.mobile}</p>
                 <Link to="/profile/edit" className="btn btn-primary">Edit Profile</Link>
+                <button  className="btn btn-secondary mx-3" onClick={handleLogout}>Logout</button>
               </div>
             </div>
           </div>

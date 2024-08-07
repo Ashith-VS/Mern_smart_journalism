@@ -1,13 +1,27 @@
-import { AUTH_CREATE_FAILURE, AUTH_CREATE_SUCCESS, GET_CURRENT_USER } from "../../common/constant";
+import { AUTH_CREATE_FAILURE, AUTH_CREATE_SUCCESS, AUTH_LOGIN_FAILURE, AUTH_LOGIN_SUCCESS, GET_CURRENT_USER } from "../../common/constant";
 import fetchData from "../../http/api"
 
-export const RegisterUserAuth=(user,navigate)=>{
+export const RegisterUserAuth=(user,navigate,setModalOpen)=>{
+
     return async(dispatch)=>{
         try {
         const res = await fetchData("/register","post",user)
         if (res.status === 200) {
             dispatch({ type: AUTH_CREATE_SUCCESS, payload: res });
-            navigate("/login"); 
+            switch (user?.role) {
+                case "superAdmin":
+                    setModalOpen(true);
+                    break;
+            case "mediaAdmin":
+                setModalOpen(true);
+                    break;
+                case "Journalist":
+                    setModalOpen(true);
+                    break;
+                default:
+                    navigate("/login");
+            }
+        
           } else {
             dispatch({ type:AUTH_CREATE_FAILURE, payload: res.message });
           }
@@ -22,21 +36,40 @@ export const LoggedUserAuth=(user,navigate)=>{
     return async(dispatch)=>{
         try {
         const res = await fetchData("/login","post",user)
+       
         if (res.status === 200) {
-            dispatch({ type: AUTH_CREATE_SUCCESS, payload: res });
-            navigate("/"); 
-          } else {
-            dispatch({ type: AUTH_CREATE_FAILURE, payload: res.message });
-          }
-        } catch (err) {
-            console.error(err.message)
-            dispatch({ type: AUTH_CREATE_FAILURE, payload: err.message });
+            dispatch({ type: AUTH_LOGIN_SUCCESS, payload: res });
+            const userRes = await fetchData('/currentuser','get',null,{Authorization:res.token})
+            if (userRes.status === 200) {
+                dispatch({ type: GET_CURRENT_USER, payload: userRes.user });
+               
+                  switch(userRes.user?.role) {
+                        case 'superAdmin':
+                            navigate("/admin");
+                            break;
+                        case 'mediaAdmin':
+                            navigate("/mediaAdmin");
+                            break;
+                        case 'Journalist':
+                            navigate("/journalist");
+                            break;
+                        default:
+                            navigate("/"); 
+                            break;
+                    }
+              }
+          }else {
+            dispatch({ type: AUTH_LOGIN_FAILURE, payload: res.message });
+           
+        }
+    } catch (err) {
+        console.error(err.message)
+            dispatch({ type: AUTH_LOGIN_FAILURE, payload: err.message });
         }
     }
 }
 
 export const currentUserAuth =(res)=>{
-    // console.log('res: ', res);
     return{
         type: GET_CURRENT_USER,
         payload: res

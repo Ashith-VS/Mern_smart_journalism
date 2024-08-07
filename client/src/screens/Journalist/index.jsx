@@ -10,8 +10,6 @@ import fetchData from '../../http/api'
 const Journalist = () => {
 
     const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
-    console.log('currentUser: ', currentUser?.role);
-    
     const[error,setError] =useState({})
     const [formData, setFormData] = useState({
         category: '',
@@ -21,7 +19,6 @@ const Journalist = () => {
         video:"",
         content: ''
     });
-    console.log('formData: ', formData);
 
       const handleChange = (e) => {
         const { name, value} = e.target;
@@ -62,8 +59,6 @@ const Journalist = () => {
         if(!isEmpty(valid)){
             setError(valid);
         }else{
-            console.log('New Article Data:', formData);
-           
             try {
               let imageUrls = [];
               if (formData.images && formData.images.length > 0) {
@@ -79,8 +74,9 @@ const Journalist = () => {
               ...formData,
               author:currentUser?._id,
               images:imageUrls,
+              parent:currentUser?.mediaAdmin
           }
-          console.log('submitData: ', submitData);
+          // console.log('submitData: ', submitData);
             // Submit form data
             await fetchData("/news", "post", submitData);
                 // Reset form data

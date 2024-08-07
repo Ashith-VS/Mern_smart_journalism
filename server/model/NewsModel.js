@@ -13,6 +13,7 @@ const NewsSchema = new mongoose.Schema({
     images: [ImgSchema],
     video: { type: String },
     author: { type: String, required: true },
+    parent: { type: String, required: true},
     newsStatus: { type: String, default: "pending" },
     publicationDate: { type: Date, default: new Date }
 })

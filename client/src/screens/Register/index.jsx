@@ -1,22 +1,46 @@
 import { isEmpty } from 'lodash';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { RegisterUserAuth } from '../../Redux/Action/AuthenticationAction';
 import { AUTH_CREATE_FAILURE } from '../../common/constant';
+import Modal from 'react-modal';
+import fetchData from '../../http/api';
+import { customStyles } from '../../common/common';
 
 const Register = () => {
+  const {id} =useParams()
+  // console.log('params:id ', id);
+  const {getmediaAdmin} = useSelector((state)=>state.NewsReducer)
+  const {token} = useSelector((state)=>state.AuthenticationReducer)
+  // console.log('token: ', token);
+  const [user, setUser] = useState([])
+  // console.log('user: ', user);
+  const getJournalists =async()=>{
+    if(!isEmpty(token)){
+      const res =await fetchData('/journalist','get',null,{Authorization:token})
+      setUser(res?.user)
+    }
+  } 
+  
+  useEffect(() => {
+    getJournalists()
+  },[])
   const navigate =useNavigate()
   const dispatch=useDispatch()
   const {currentUser,AuthFailure} = useSelector((state)=>state.AuthenticationReducer)
+    const [ModalOpen, setModalOpen] = useState(false);
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
       name: "",
       email: "",
       mobile: "",
       password: "",
-      role: currentUser?.role ==="superAdmin"?"mediaAdmin":currentUser?.role==="mediaAdmin"?"Journalist":"",
+      role: currentUser?.role ==="superAdmin"?"mediaAdmin":currentUser?.role==="mediaAdmin"?"Journalist":currentUser === null && "user",
     });
+
+    const roleChange=currentUser?.role ==="superAdmin"?"/admin":currentUser?.role==="mediaAdmin"?"/mediaAdmin" :currentUser?.role==="Journalist"?"/Journalist":"/login"
+    // console.log('roleChange: ', roleChange);
     const inputs= [{
         "id": "name",
         "label": "User Name",
@@ -86,8 +110,6 @@ const handleValidation = (e) => {
       return error;
     }
     
-
-
     const handleSubmit=async(e)=>{
       e.preventDefault()
       const valid = handleValidation()
@@ -95,11 +117,9 @@ const handleValidation = (e) => {
         setErrors(valid)
       }else{
         const submitData = {...formData,
-          ...(currentUser?.role ==="mediaAdmin"&&{ mediaAdmin:currentUser?._id}
-          )
+          ...(currentUser?.role ==="mediaAdmin"&&{ mediaAdmin:currentUser?._id})
         }
-        console.log('formData: ', submitData);
-       await dispatch(RegisterUserAuth(submitData,navigate))
+       await dispatch(RegisterUserAuth(submitData,navigate,setModalOpen))
       }
     }
 
@@ -114,12 +134,35 @@ const handleChange = (e) => {
   };
 
 
-  const mediaOptions = [
-    { id: 1, name: 'Image 1', url: 'https://example.com/path/to/image1.jpg' },
-    { id: 2, name: 'Image 2', url: 'https://example.com/path/to/image2.jpg' },
-    { id: 3, name: 'Video 1', url: 'https://example.com/path/to/video1.mp4' },
-    { id: 4, name: 'Video 2', url: 'https://example.com/path/to/video2.mp4' },
-];
+  const filteredData=[
+    ...getmediaAdmin,
+    ...user
+  ]
+  
+  
+  const filteredResult= filteredData?.find(admin=>admin?._id === id)
+
+  useEffect(() => {
+   setFormData({
+    name: filteredResult?.name,
+    email: filteredResult?.email,
+    mobile:filteredResult?.mobile,
+    password: filteredResult?.password,
+    role: currentUser?.role ==="superAdmin"?"mediaAdmin":currentUser?.role==="mediaAdmin"?"Journalist":currentUser === null && "user",
+  })
+  }, [id,currentUser])
+
+  const handleUpdate=async()=>{
+    const submitData = {...formData,
+      ...(currentUser?.role ==="mediaAdmin"&&{ mediaAdmin:currentUser?._id}
+      )
+    }
+    // console.log('formData: ', submitData);
+  //  await dispatch(RegisterUserAuth(submitData,navigate,setModalOpen))
+  }
+  
+
+
   return (
     <section className="gradient-form d-flex justify-content-center align-items-center"style={{ height: "100vh" }}>
     <div className="container py-5">
@@ -142,10 +185,13 @@ const handleChange = (e) => {
                     <span style={{ color: "red" }}>{AuthFailure}</span>
                   </div>
                 )}
+            {  id  ?
+                <h4 className="mt-1 mb-5 pb-1">{currentUser?.role==="superAdmin"?"update MediaAdmin":currentUser?.role==="mediaAdmin"?"update Journalist":"Update"}</h4>:
                 <h4 className="mt-1 mb-5 pb-1">{currentUser?.role==="superAdmin"?"Create MediaAdmin":currentUser?.role==="mediaAdmin"?"Create Journalist":"Register"}</h4>
-              </div>
-              <form onSubmit={handleSubmit}>
+             } </div>
+              <form onSubmit={id?handleUpdate:handleSubmit}>
               {inputs.map((item, i) => renderedInputs(item, i))}
+              {currentUser !== null&&
               <div  className="form-outline mb-4">
         <label className="form-label" htmlFor={"role"}>Media</label>
         <input
@@ -155,26 +201,9 @@ const handleChange = (e) => {
           value={formData?.role}
           readOnly
         />
-      </div>
-      <div className="form-outline mb-4">
-                                            <label className="form-label" htmlFor="role">Role</label>
-                                            <select
-                                                id="role"
-                                                name="role"
-                                                className="form-control"
-                                                value={formData.role}
-                                                onChange={handleChange}
-                                            >
-                                                <option value="">Select a media</option>
-                                                {mediaOptions.map(media => (
-                                                    <option key={media.id} value={media.url}>
-                                                        {media.name} {/* Display the media name or title */}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
+      </div>}
                 <div className="d-flex justify-content-end ">
-                  <button className="btn btn-primary mb-3" type="submit">Submit</button>
+                  <button className="btn btn-primary mb-3" type="submit">{id?"Update":"Submit"}</button>
                 </div>
               </form>
               {(currentUser?.role !=="superAdmin" && currentUser?.role !=="mediaAdmin")&&
@@ -186,6 +215,19 @@ const handleChange = (e) => {
         </div>
       </div>
     </div>
+
+      <Modal isOpen={ModalOpen} style={customStyles} onRequestClose={() => setModalOpen(false)}>
+        <div className="modal-content align-items-center justify-content-center">
+          <div className="modal-body text-center">
+            <h5 className="modal-title mb-4"></h5>
+            <p>{id?`${formData?.role} Updated Successfully`:`${formData?.role} Created Successfully`}</p>
+            <div className="modal-footer mt-3">
+              <button className="btn btn-secondary mx-2" onClick={() =>{ setModalOpen(false)
+                navigate(roleChange)}}>Close</button>
+            </div>
+          </div>
+        </div>
+      </Modal>
   </section>
   )
 }

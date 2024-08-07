@@ -1,14 +1,47 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import Sidebar from '../../components/Sidebar'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import fetchData from '../../http/api'
+import { isEmpty } from 'lodash'
 
 const MediaAdmin = () => {
-  const {currentUser} = useSelector((state)=> state.AuthenticationReducer)
-  console.log('currentUser: ', currentUser);
- 
+  const navigate =useNavigate()
+  const[user,setUser]=useState([])
+  const {currentUser,token} = useSelector((state)=> state.AuthenticationReducer)
+  // console.log('token: ', token);
+  // useEffect(() => {
+  //   const tok =localStorage.getItem('auth_token')
+  //   console.log('tok: ', tok);
+  // }, [])
+  
+// const tok =localStorage.getItem('auth_token')
+  const getJournalists = async () => {
+    if (!isEmpty(token)) {
+      try {
+        const res = await fetchData('/journalist', 'GET', {}, { Authorization: token });
+        setUser(res?.user);
+      } catch (error) {
+        console.error('Error fetching journalists:', error);
+      }
+    }
+  };
+  useEffect(() => {
+    getJournalists()
+  },[token])
+
+  const handleDeleteJournalist = async (id) => {
+    try {
+      const res = await fetchData(`/journalist/${id}`, 'delete')
+      // console.log('res: ', res);
+      await getJournalists()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  
     return (
         <div>
         <Navbar />
@@ -23,25 +56,33 @@ const MediaAdmin = () => {
                   <thead className="table-dark">
                     <tr>
                       <th>Journalist Name</th>
-                      <th>Date</th>
+                      <th>Email</th>
+                      <th>Mobile</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {/* {tickets.map((event, index) => ( */}
-                      <tr >
-                        <td>{"event.name"}</td>
-                        <td>{"event.name"}</td>
+                    {user?.map((event) => (
+                      <tr key={event?._id}>
+                        <td>{event?.name}</td>
+                        <td>{event?.email}</td>
+                        <td>{event?.mobile}</td> 
                         <td>
-                          <button 
+                          {/* <button 
                             className="btn btn-primary btn-sm" 
-                            // onClick={() => handleEdit(event.id)}
+                            // onClick={() =>navigate(`/register/${event?._id}`)}
                           >
                             Edit
+                          </button> */}
+                          <button 
+                            className="mx-2 btn btn-secondary btn-sm" 
+                            onClick={() => handleDeleteJournalist(event?._id)}
+                          >
+                          Delete
                           </button>
                         </td>
                       </tr>
-                    {/* ))} */}
+                    ))} 
                   </tbody>
                 </table>
               </div>

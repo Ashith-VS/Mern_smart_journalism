@@ -18,14 +18,15 @@ const fetchData = async (endpoint, method = 'GET', data = {}, headers = {}) => {
         const response = await axios(config);
         return response.data;
     } catch (error) {
-        if (error.response) {
-            console.log("error.response", error.response);
-            throw new Error(error.response.data.message || 'An error occurred');
+        if (error?.response) {
+            // console.log("error.response", error.response);
+            throw new Error(error?.response?.data?.message || 'An error occurred');
         } else if (error.request) {
-            console.log("error.request", error.request);
+            // console.log("error.request", error.request);
             throw new Error('No response received from server');
-        } else {
-            console.log("error.message", error.message)
+        } 
+        else {
+            // console.log("error.message", error.message)
             throw new Error(error.message);
         }
     }

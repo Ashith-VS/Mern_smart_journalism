@@ -1,9 +1,14 @@
 import React from 'react'
 import Router from './routes/Router'
+import Modal from 'react-modal';
+import "./App.css"
+Modal.setAppElement('#root');
 
 const App = () => {
   return (
-    <Router/>
+    <div>
+      <Router />
+    </div>
   )
 }
 

@@ -3,12 +3,13 @@ import { isEmpty } from 'lodash';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LoggedUserAuth } from '../../Redux/Action/AuthenticationAction';
-import { AUTH_CREATE_FAILURE } from '../../common/constant';
+import {AUTH_LOGIN_FAILURE } from '../../common/constant';
 
 const Login = () => {
 const navigate =useNavigate()
 const dispatch=useDispatch()
-const {AuthFailure} = useSelector((state)=>state.AuthenticationReducer)
+const {LoginFailure} = useSelector((state)=>state.AuthenticationReducer)
+
 const [errors, setErrors] = useState({});
 const [formData, setFormData] = useState({
   email: "",
@@ -58,7 +59,7 @@ const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
-    dispatch({type:AUTH_CREATE_FAILURE,payload:false})
+    dispatch({type:AUTH_LOGIN_FAILURE,payload:false})
   };
 
   const handleValidation = () => {
@@ -102,9 +103,9 @@ return (
                     ))}
                   </div>
                 )}
-                 {AuthFailure && (
+                 {LoginFailure && (
                   <div className="text-center">
-                    <span style={{ color: "red" }}>{AuthFailure}</span>
+                    <span style={{ color: "red" }}>{LoginFailure}</span>
                   </div>
                 )}
                 <h4 className="mt-1 mb-5 pb-1">Login</h4>
