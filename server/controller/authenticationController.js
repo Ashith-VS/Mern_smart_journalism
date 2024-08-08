@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const UserData = require("../model/AuthenticationModel");
-const { blacklistedTokens } = require('../middleware/authMiddleware');
+const { blacklistToken } = require('../middleware/VerifyMiddleware');
+
 
 const isRegister = async (req, res) => {
     try {
@@ -108,10 +109,8 @@ const isUpdateProfile = async (req, res) => {
 const isLogOut = async (req, res) => {
     try {
         const token = req.header('Authorization')?.split(' ')[1];
-        console.log('token: ', token);
         if (token) {
-            blacklistedTokens.add(token); // Add token to the blacklist
-            console.log('blacklistedTokens: ', blacklistedTokens);
+            blacklistToken(token); // Add token to the blacklist with an expiry time
         }
         res.status(200).json({ message: 'User logged out successfully' });
     } catch (error) {

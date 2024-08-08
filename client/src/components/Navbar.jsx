@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { currentUserAuth } from '../Redux/Action/AuthenticationAction';
 import profileIcon from "../assets/images/profile.png";
 import { isEmpty } from 'lodash';
-import { AUTH_LOGIN_SUCCESS, GET_CURRENT_USER } from '../common/constant';
+import {GET_CURRENT_USER } from '../common/constant';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -13,15 +13,13 @@ const Navbar = () => {
  const token=localStorage.getItem('auth_token');
   const [showDropdown, setShowDropdown] = useState(false);
   const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
-  console.log('currentUser: ', currentUser);
-  
 
 const getCurrentUser=async()=>{
-//   const tok='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjMzZjRmNmZjOGEzNWM3OTE2MGQyOSIsImlhdCI6MTcyMzEyMDcwMiwiZXhwIjoxNzIzMTI0MzAyfQ.cHRS5NPcNZF9WWw_LltOB2tLqhc7FnYI5JAr-PRpEnk'	
-//  const res= localStorage.setItem('auth_token',tok)
+  // const tok='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjMzZjRmNmZjOGEzNWM3OTE2MGQyOSIsImlhdCI6MTcyMzE0MTg2MiwiZXhwIjoxNzIzMTQ1NDYyfQ.uL6kG0_37cvq4OJXAnNfrMtgQbct53qrex1hA2a79Tg'	
+  // localStorage.setItem('auth_token',tok)
   try {
     if(token){
-      console.log('token: ', token);
+      // console.log('token: ', token);
     const res = await fetchData('/currentuser','get')
     // console.log('res: ', res);
     dispatch(currentUserAuth(res?.user))

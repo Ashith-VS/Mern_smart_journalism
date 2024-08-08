@@ -4,27 +4,20 @@ import Sidebar from '../../components/Sidebar'
 import Footer from '../../components/Footer'
 import Modal from 'react-modal';
 import fetchData from '../../http/api';
-import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { customStyles } from '../../common/common';
 
 const NewsStatus = () => {
 
-    const {token}=useSelector((state)=>state.AuthenticationReducer)
+  const token=localStorage.getItem('auth_token');
     // console.log('token: ', token);
     const [selectedNews, setSelectedNews] = useState({});
-    // console.log('selectedNews: ', selectedNews);
-    // console.log('token: ', token);
-    
     const [ModalOpen, setModalOpen] = useState(false);
     const [newsData, setNewsData] = useState([]);
-    // console.log('newsData: ', newsData);
    
-
-    // console.log('isEmpty(token): ', !isEmpty(token));
     const getNewsData=async()=>{
       if(!isEmpty(token)){
-        const res=await fetchData("/allnews","get",null,{Authorization:token})
+        const res=await fetchData("/allnews","get")
         // console.log('res: ', res);
         setNewsData(res?.news)
       }

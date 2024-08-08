@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { GET_CURRENT_USER } from '../../common/constant'
 import fetchData from '../../http/api'
 import Navbar from '../../components/Navbar'
@@ -46,7 +46,7 @@ const EditProfile = () => {
       const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-          const res = await fetchData('/updateProfile', 'post', { formData }, { Authorization: token });
+          const res = await fetchData('/updateProfile', 'post', { formData });
           if (res) {
             dispatch({ type: GET_CURRENT_USER, payload: res.user });
             navigate('/profile');

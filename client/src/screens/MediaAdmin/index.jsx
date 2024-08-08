@@ -8,16 +8,16 @@ import { isEmpty } from 'lodash'
 
 const MediaAdmin = () => {
   const[user,setUser]=useState([])
-  const {currentUser,token} = useSelector((state)=> state.AuthenticationReducer)
-  // const token = localStorage.getItem('auth_token')
-  // console.log('token: ', token);
+  const {currentUser} = useSelector((state)=> state.AuthenticationReducer)
+  
+  const token=localStorage.getItem('auth_token');
   
   
 // const tok =localStorage.getItem('auth_token')
   const getJournalists = async () => {
     if (!isEmpty(token)) {
       try {
-        const res = await fetchData('/journalist', 'GET', {}, { Authorization: token });
+        const res = await fetchData('/journalist', 'GET');
         setUser(res?.user);
       } catch (error) {
         console.error('Error fetching journalists:', error);
@@ -26,7 +26,7 @@ const MediaAdmin = () => {
   };
   useEffect(() => {
     getJournalists()
-  },[token])
+  },[])
 
   const handleDeleteJournalist = async (id) => {
     try {
