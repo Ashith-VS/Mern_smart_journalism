@@ -5,19 +5,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { currentUserAuth } from '../Redux/Action/AuthenticationAction';
 import profileIcon from "../assets/images/profile.png";
 import { isEmpty } from 'lodash';
-import { GET_CURRENT_USER } from '../common/constant';
+import { AUTH_LOGIN_SUCCESS, GET_CURRENT_USER } from '../common/constant';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch=useDispatch()
-  const {token} =useSelector((state)=>state.AuthenticationReducer)
+ const token=localStorage.getItem('auth_token');
   const [showDropdown, setShowDropdown] = useState(false);
   const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
+  console.log('currentUser: ', currentUser);
   
+
 const getCurrentUser=async()=>{
+//   const tok='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjMzZjRmNmZjOGEzNWM3OTE2MGQyOSIsImlhdCI6MTcyMzEyMDcwMiwiZXhwIjoxNzIzMTI0MzAyfQ.cHRS5NPcNZF9WWw_LltOB2tLqhc7FnYI5JAr-PRpEnk'	
+//  const res= localStorage.setItem('auth_token',tok)
   try {
-  if(token){
-    const res = await fetchData('/currentuser','get',null,{Authorization:token})
+    if(token){
+      console.log('token: ', token);
+    const res = await fetchData('/currentuser','get')
+    // console.log('res: ', res);
     dispatch(currentUserAuth(res?.user))
   }
   } catch (error) {
@@ -27,14 +33,20 @@ const getCurrentUser=async()=>{
 
 useEffect(() => {
     getCurrentUser()
-}, [token])
+}, [])
 
 
-
-const handleLogout=()=>{
-  localStorage.clear();
-  dispatch({type:GET_CURRENT_USER, payload:null})
-  navigate('/')
+const handleLogout=async()=>{
+  try {
+    const res = await fetchData("/logout","get")
+    console.log('res: ', res);
+    // localStorage.clear();
+    localStorage.removeItem('auth_token');
+    dispatch({type:GET_CURRENT_USER, payload:null})
+   navigate('/')
+  } catch (error) {
+    console.error(error)
+  }
 }
 
   return (
@@ -70,7 +82,7 @@ const handleLogout=()=>{
             </li>}
             <li className="nav-item">
               <img
-                src={profileIcon}
+                src={currentUser?.image?currentUser?.image:profileIcon}
                 alt="Profile"
                 style={{height:"40px", width:"40px",objectFit:"cover",cursor: "pointer"}}
                 onClick={() => setShowDropdown(!showDropdown)}

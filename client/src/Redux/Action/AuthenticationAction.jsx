@@ -39,10 +39,9 @@ export const LoggedUserAuth=(user,navigate)=>{
        
         if (res.status === 200) {
             dispatch({ type: AUTH_LOGIN_SUCCESS, payload: res });
-            const userRes = await fetchData('/currentuser','get',null,{Authorization:res.token})
+            const userRes = await fetchData('/currentuser','get')
             if (userRes.status === 200) {
                 dispatch({ type: GET_CURRENT_USER, payload: userRes.user });
-               
                   switch(userRes.user?.role) {
                         case 'superAdmin':
                             navigate("/admin");

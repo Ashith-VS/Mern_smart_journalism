@@ -8,6 +8,7 @@ const fetchData = async (endpoint, method = 'GET', data = {}, headers = {}) => {
         method: method.toUpperCase(),
         headers: {
             'Content-Type': 'application/json',
+            Authorization: localStorage.getItem('auth_token') ? `Bearer ${localStorage.getItem('auth_token')}` : null,
             ...headers,
         },
         data,
@@ -19,14 +20,11 @@ const fetchData = async (endpoint, method = 'GET', data = {}, headers = {}) => {
         return response.data;
     } catch (error) {
         if (error?.response) {
-            // console.log("error.response", error.response);
             throw new Error(error?.response?.data?.message || 'An error occurred');
         } else if (error.request) {
-            // console.log("error.request", error.request);
             throw new Error('No response received from server');
-        } 
+        }
         else {
-            // console.log("error.message", error.message)
             throw new Error(error.message);
         }
     }

@@ -11,7 +11,9 @@ import { customStyles } from '../../common/common';
 const Register = () => {
   const {id} =useParams()
   const {getmediaAdmin} = useSelector((state)=>state.NewsReducer)
-  const {token} = useSelector((state)=>state.AuthenticationReducer)
+  // const {token} = useSelector((state)=>state.AuthenticationReducer)
+  const token =localStorage.getItem('auth_token')
+  // console.log('token: ', token);
   const [user, setUser] = useState([])
 
   const getJournalists =async()=>{

@@ -40,7 +40,7 @@ const getMediaAdmins = async (req, res) => {
 
 
 const getJournalistByMediaAdmin = async (req, res) => {
-    // console.log('req.id5555: ', req.id);
+    console.log('req.id5555: ', req.id);
     try {
         const user = await UserData.find({ mediaAdmin: req.id })
         // console.log('user: ', user);

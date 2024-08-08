@@ -8,7 +8,8 @@ const UserSchema = new mongoose.Schema({
     role: { type: String, default: 'user' },
     blocked: { type: Boolean, default: false },
     mediaAdmin: { type: String },
-    savedNews: [{type:mongoose.Schema.Types.ObjectId,ref:'News'}]
+    savedNews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'News' }],
+    image: { type: String }
 });
 
 const UserData = mongoose.model('User', UserSchema);

@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { About, AllNews, Home, Journalist, Login, MediaAdmin, News, NewsApproved, NewsDetail, NewsDetails, NewsRejected, NewsStatus, Profile, Published, Register, SavedNews, SuperAdmin } from '../screens';
+import { About, AllNews, EditProfile, Home, Journalist, Login, MediaAdmin, News, NewsApproved, NewsDetail, NewsDetails, NewsRejected, NewsStatus, Profile, Published, Register, SavedNews, SuperAdmin } from '../screens';
 
 const Router = () => {
   return (
@@ -26,6 +26,8 @@ const Router = () => {
     <Route path="/journalist/published" element={<Published/>} />
 
     <Route path="/profile" element={<Profile/>} />
+    <Route path="/profile/edit" element={<EditProfile/>} />
+
    </Routes>
    </BrowserRouter>
   )

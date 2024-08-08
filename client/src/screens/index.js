@@ -15,6 +15,7 @@ import AllNews from "./SuperAdmin/AllNews"
 import NewsDetails from "./Home/NewsDetails"
 import SavedNews from "./Home/SavedNews"
 import About from "./About"
+import EditProfile from "./profile/EditProfile"
 
 export {
     Home,
@@ -27,6 +28,7 @@ export {
     MediaAdmin,
     NewsStatus,
     Profile,
+    EditProfile,
     Journalist,
     News,
     NewsDetail,

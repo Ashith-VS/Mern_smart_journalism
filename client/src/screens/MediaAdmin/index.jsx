@@ -2,20 +2,16 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import Sidebar from '../../components/Sidebar'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import fetchData from '../../http/api'
 import { isEmpty } from 'lodash'
 
 const MediaAdmin = () => {
-  const navigate =useNavigate()
   const[user,setUser]=useState([])
   const {currentUser,token} = useSelector((state)=> state.AuthenticationReducer)
+  // const token = localStorage.getItem('auth_token')
   // console.log('token: ', token);
-  // useEffect(() => {
-  //   const tok =localStorage.getItem('auth_token')
-  //   console.log('tok: ', tok);
-  // }, [])
+  
   
 // const tok =localStorage.getItem('auth_token')
   const getJournalists = async () => {

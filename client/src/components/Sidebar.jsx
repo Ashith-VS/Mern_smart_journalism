@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
+  console.log('currentUser: ', currentUser);
 
   return (
     <div className="d-flex flex-column bg-light vh-100 "style={{padding:"30px"}}>
