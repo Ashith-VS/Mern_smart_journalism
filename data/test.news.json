@@ -1,0 +1,147 @@
+[{
+  "_id": {
+    "$oid": "66ac80033c5eaf207950b9c4"
+  },
+  "category": "Technology",
+  "location": "NewDelhi",
+  "title": "the rise of ai",
+  "content": "The rise of AI content has revolutionized various industries, including marketing, journalism, and entertainment. AI technologies can generate articles, create multimedia content, and automate customer service interactions, providing significant efficiency and scalability. This shift has led to the rapid production of high-quality, data-driven content tailored to specific audiences. However, it also raises concerns about authenticity, as AI-generated content can sometimes lack the nuance and creativity of human-created work. Additionally, there are ethical considerations regarding the potential misuse of AI for misinformation or biased content. As AI continues to evolve, it is crucial for creators and consumers to stay informed about its capabilities and\n limitations to ensure responsible and effective use.",
+  "images": [
+    {
+      "filename": "1722580994918-photo-1521032078283-ca2eb1773c0e.avif",
+      "url": "upload\\1722580994918-photo-1521032078283-ca2eb1773c0e.avif",
+      "_id": {
+        "$oid": "66ac80033c5eaf207950b9c5"
+      }
+    },
+    {
+      "filename": "1722580994919-photo-1605142859862-978be7eba909.avif",
+      "url": "upload\\1722580994919-photo-1605142859862-978be7eba909.avif",
+      "_id": {
+        "$oid": "66ac80033c5eaf207950b9c6"
+      }
+    }
+  ],
+  "video": "",
+  "author": "66ab4c4deb2b6e6fca3badb4",
+  "publicationDate": {
+    "$date": "2024-08-02T06:35:25.755Z"
+  },
+  "__v": 0,
+  "parent": "66ab297a683283528ea39919",
+  "newsStatus": "rejected"
+},
+{
+  "_id": {
+    "$oid": "66b0bb67596e2684d9662695"
+  },
+  "category": "Tech Today",
+  "location": "NewDelhi",
+  "title": "AI Innovations in 2024",
+  "content": "The latest advancements in artificial intelligence are transforming industries across the globe. From healthcare to finance, AI is making significant impacts.",
+  "images": [],
+  "video": "",
+  "author": "66ab4c4deb2b6e6fca3badb4",
+  "newsStatus": "approved",
+  "publicationDate": {
+    "$date": "2024-08-05T11:23:33.878Z"
+  },
+  "__v": 0,
+  "parent": "66ab297a683283528ea39919"
+},
+{
+  "_id": {
+    "$oid": "66b0cdf5a23e6ecf23c716fa"
+  },
+  "category": "Health",
+  "location": "Bangalore",
+  "title": "New Health Guidelines Released",
+  "content": "Health authorities have released new guidelines aimed at improving public health. The guidelines focus on nutrition, exercise, and mental well-being.",
+  "images": [],
+  "video": "",
+  "author": "66b0cb4cb9758a9d5bc3120d",
+  "parent": "66ab297a683283528ea39919",
+  "newsStatus": "approved",
+  "publicationDate": {
+    "$date": "2024-08-05T13:04:15.558Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66b1ee438cc1ab4e7cc22484"
+  },
+  "category": "Technology",
+  "location": "Silicon Valley, USA",
+  "title": "Tech Innovations in 2024",
+  "content": "In 2024, technology is evolving faster than ever. Breakthroughs in AI, quantum computing, and renewable energy are shaping the future. From advanced robotics to immersive virtual reality experiences, the technological landscape is dynamic and exciting. Major tech companies are investing heavily in research and development to stay ahead of the curve. Innovations like self-driving cars and smart cities are becoming more prevalent, promising to change the way we live and work.",
+  "images": [
+    {
+      "filename": "1722936899576-download.jpg",
+      "url": "upload\\1722936899576-download.jpg",
+      "_id": {
+        "$oid": "66b1ee438cc1ab4e7cc22485"
+      }
+    }
+  ],
+  "video": "",
+  "author": "66b1b6d305633853f3cefe00",
+  "parent": "66b058feebdbbc88d72f88cb",
+  "newsStatus": "approved",
+  "publicationDate": {
+    "$date": "2024-08-06T07:17:16.171Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66b1eec68cc1ab4e7cc2249d"
+  },
+  "category": "Weather",
+  "location": "New York, USA",
+  "title": "Breaking Weather Alert",
+  "content": "A severe weather alert has been issued for the eastern region due to an approaching storm. Residents are advised to take necessary precautions, including securing outdoor items and preparing emergency kits. The storm is expected to bring heavy rain, strong winds, and possible flooding. Authorities are closely monitoring the situation and will provide updates as necessary. Stay tuned to local news channels for real-time information and safety instructions.",
+  "images": [
+    {
+      "filename": "1722937030689-istockphoto-1429064821-170667a.webp",
+      "url": "upload\\1722937030689-istockphoto-1429064821-170667a.webp",
+      "_id": {
+        "$oid": "66b1eec68cc1ab4e7cc2249e"
+      }
+    }
+  ],
+  "video": "",
+  "author": "66b1b6d305633853f3cefe00",
+  "parent": "66b058feebdbbc88d72f88cb",
+  "newsStatus": "approved",
+  "publicationDate": {
+    "$date": "2024-08-06T07:17:16.171Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66b1ef678cc1ab4e7cc224ac"
+  },
+  "category": "Sports",
+  "location": "Doha, Qatar",
+  "title": "Highlights from the World Cup Finals",
+  "content": "The World Cup finals showcased some of the most exciting moments in football history. Teams battled fiercely for the championship, with incredible goals and memorable performances. Highlights include the winning goal in the final minutes and standout plays by top players. Fans from around the world celebrated as their teams gave it their all on the field. Catch up on the most thrilling moments and relive the excitement of the World Cup finals.",
+  "images": [
+    {
+      "filename": "1722937191218-images.jpg",
+      "url": "upload\\1722937191218-images.jpg",
+      "_id": {
+        "$oid": "66b1ef678cc1ab4e7cc224ad"
+      }
+    }
+  ],
+  "video": "https://www.example.com/world-cup-highlights",
+  "author": "66b1b6d305633853f3cefe00",
+  "parent": "66b058feebdbbc88d72f88cb",
+  "newsStatus": "approved",
+  "publicationDate": {
+    "$date": "2024-08-06T07:17:16.171Z"
+  },
+  "__v": 0
+}]
