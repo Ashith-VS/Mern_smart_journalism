@@ -11,10 +11,8 @@ const PrivateRoute = ({ roles }) => {
   const token =localStorage.getItem('auth_token');
   const [isAuthorized, setIsAuthorized] = useState(null);
 
-
   useEffect(() => {
     if (token && isEmpty(currentUser)) {
-        // console.log('token: ', token);
       dispatch(currentUserAuth());
     } 
   }, []);
@@ -39,7 +37,7 @@ const PrivateRoute = ({ roles }) => {
 
 if (isAuthorized === false) {
     return isEmpty(currentUser) ? <Login/>: <Unauthorized />
-  }
+}
 
   return <Outlet />;
 };

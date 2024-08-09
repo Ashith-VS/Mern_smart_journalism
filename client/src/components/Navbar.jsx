@@ -16,9 +16,9 @@ const Navbar = () => {
   // console.log('currentUsernavbar: ', currentUser);
 
 useEffect(() => {
-  if(token && !currentUser){
-    dispatch(currentUserAuth())
-  }
+  if (token && isEmpty(currentUser)) {
+    dispatch(currentUserAuth());
+  } 
 }, [])
 
 

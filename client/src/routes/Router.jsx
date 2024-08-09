@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { About, AllNews, EditProfile, Home, Journalist, Login, MediaAdmin, News, NewsApproved, NewsDetail, NewsDetails, NewsRejected, NewsStatus, Profile, Published, Register, SavedNews, SuperAdmin, Unauthorized } from '../screens';
+import { About, AllNews, EditProfile, Home, Journalist, Login, MediaAdmin, News, NewsApproved, NewsDetail, NewsDetails, NewsRejected, NewsStatus, PageNotFound, Profile, Published, Register, SavedNews, SuperAdmin, Unauthorized } from '../screens';
 import PrivateRoute from './PrivateRoute';
 
 const Router = () => {
@@ -15,7 +15,8 @@ const Router = () => {
     <Route path="/login" element={<Login/>} />
     <Route path="/register" element={<Register/>} />
     <Route path="/register/:id" element={<Register/>} />
-
+    <Route path="*" element={<PageNotFound/>} />
+    
 {/* Private Routes */}
        <Route element={<PrivateRoute roles={['superAdmin']} />}>
           <Route path="/admin" element={<SuperAdmin />} />
@@ -40,7 +41,7 @@ const Router = () => {
            <Route path="/saved" element={<SavedNews />} />
         </Route>
 
-        {/* Unauthorized Route */}
+{/* Unauthorized Route */}
         <Route path="/unauthorized" element={<Unauthorized />} />
    </Routes>
    </BrowserRouter>

@@ -6,12 +6,14 @@ import { imagePath } from '../../common/common';
 import saveIcon from "../../assets/images/save-instagram.png"
 import savedIcon from "../../assets/images/bookmark.png"
 import fetchData from '../../http/api';
+import { isEmpty } from 'lodash';
 
 const SavedNews = () => {
     const {currentUser} = useSelector((state)=>state.AuthenticationReducer)
     // console.log('currentUser: ', currentUser);
     const [savedNews, setSavedNews] = useState([]);
     const [savedItems, setSavedItems] = useState({});
+    const token=localStorage.getItem('auth_token');
     
   const fetchSavedNews=async()=>{
     try {
@@ -27,10 +29,10 @@ const SavedNews = () => {
   }
 
     useEffect(() => {
-        if(currentUser){
+        if(token && !isEmpty(currentUser)){
             fetchSavedNews()
         }
-       }, [currentUser])
+       }, [])
 
       const handleRemoveSavedNews=async(newsId)=>{
         if(currentUser){

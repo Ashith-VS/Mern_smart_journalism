@@ -8,8 +8,12 @@ import savedIcon from "../../assets/images/bookmark.png"
 import { useSelector } from 'react-redux';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
+import { isEmpty } from 'lodash';
+import Pagination from '../../components/Pagination';
 
 const Home = () => {
+
+  const token =localStorage.getItem('auth_token');
   const navigate =useNavigate()
   const {currentUser} =useSelector((state) =>state.AuthenticationReducer)
   // console.log('currentUser: ', currentUser);
@@ -21,6 +25,10 @@ const Home = () => {
   const [filteredNewsData, setFilteredNewsData] = useState([]);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState({});
+   // pagination
+const [page, setPage] = useState(1);
+const [limit, setLimit] = useState(10); 
+const [totalPages, setTotalPages] = useState(0);
   
   const getNewsData = async () => {
     try {
@@ -51,10 +59,12 @@ const Home = () => {
   const handleMediaSelect = async (data) => {
     setSelectedCategory(data?.name);
     try {
+      if(token){
       const res = await fetchData(`/mediaNews/${data?.id}`, 'get');
       // console.log('res: ', res);
       // setNewsData(res?.news || []);
       setFilteredNewsData(res?.news || []);
+    }
     } catch (error) {
       console.error(error);
     }
@@ -73,17 +83,17 @@ const Home = () => {
   const fetchSavedNews=async()=>{
   try {
     const res = await fetchData(`/savedNews/${currentUser?._id}`,"get")
-    setSavedItems(res.savedNews.reduce((acc,curr)=>({...acc,[curr._id]:true}),{}));
+    setSavedItems(res.savedNews.reduce((acc,curr)=>({...acc,[curr?._id]:true}),{}));
   } catch (error) {
     console.error(error);
   }
 }
 
 useEffect(() => {
- if(currentUser){
+ if(token && !isEmpty(currentUser)){
 fetchSavedNews()
  }
-}, [currentUser])
+}, [])
 
 
 const handleSaveNews=async(newsId)=>{
@@ -162,8 +172,13 @@ if(res.status){
               <p>No news available</p>
             )}
           </div>
+           {/* <Pagination 
+            currentPage={page} 
+            totalPages={totalPages} 
+            onPageChange={(newPage) => setPage(newPage)} /> */}
         </main>
       </div>
+
       <Footer />
       <Modal isOpen={loginModalOpen} style={customStyles} onRequestClose={() => setLoginModalOpen(false)}>
         <div className="modal-content align-items-center justify-content-center p-5">
