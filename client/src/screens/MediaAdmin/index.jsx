@@ -9,11 +9,8 @@ import { isEmpty } from 'lodash'
 const MediaAdmin = () => {
   const[user,setUser]=useState([])
   const {currentUser} = useSelector((state)=> state.AuthenticationReducer)
-  
   const token=localStorage.getItem('auth_token');
   
-  
-// const tok =localStorage.getItem('auth_token')
   const getJournalists = async () => {
     if (!isEmpty(token)) {
       try {

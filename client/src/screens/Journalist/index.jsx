@@ -30,18 +30,6 @@ const Journalist = () => {
       const {name,files} = e.target
         setFormData({...formData,[name]: Array.from(files)});
         setError({...error,[name]:""})
-        // if(files && files.length > 0){
-        //   const form = new FormData();
-        //   Array.from(files).forEach(file => {
-        //     form.append("photos", file);
-        //   });
-        //     try {
-        //         await fetchData("/multipleimg","post", form,{ 'Content-Type': 'multipart/form-data' })
-        //     } catch (error) {
-        //         console.error(error.message)
-        //     }
-        // }
-       
       }
 
       const handleValidation = () => {

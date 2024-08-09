@@ -10,9 +10,14 @@ import { isEmpty } from 'lodash';
 const AllNews = () => {
     const {id}=useParams()
     const[news,setNews] =useState([])
+
 const getAllNews=async()=>{
+  try {
     const res= await fetchData("/allNewss","get") 
     setNews(res?.news)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 useEffect(()=>{

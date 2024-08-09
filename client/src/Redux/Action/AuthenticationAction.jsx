@@ -2,10 +2,9 @@ import { AUTH_CREATE_FAILURE, AUTH_CREATE_SUCCESS, AUTH_LOGIN_FAILURE, AUTH_LOGI
 import fetchData from "../../http/api"
 
 export const RegisterUserAuth=(user,navigate,setModalOpen)=>{
-
     return async(dispatch)=>{
         try {
-        const res = await fetchData("/register","post",user)
+        const res = await fetchData("/register","post", user)
         if (res.status === 200) {
             dispatch({ type: AUTH_CREATE_SUCCESS, payload: res });
             switch (user?.role) {
@@ -68,9 +67,16 @@ export const LoggedUserAuth=(user,navigate)=>{
     }
 }
 
-export const currentUserAuth =(res)=>{
-    return{
-        type: GET_CURRENT_USER,
-        payload: res
+export const currentUserAuth =()=>{
+return async (dispatch)=>{
+    try {
+        const res = await fetchData('/currentuser','get')
+        if (res.status === 200) {
+            dispatch({type:GET_CURRENT_USER,payload:res.user});
+        } 
+    } catch (err) {
+        console.error(err.message)
+        return null
     }
+}
 }

@@ -12,8 +12,6 @@ function verifyToken(req, res, next) {
 
    // Check if token is blacklisted and not expired
    const blacklistEntry = blacklistedTokens.get(token);
-  //  console.log('blacklistedTokens: ', blacklistedTokens);
-  //  console.log('blacklistEntry: ', blacklistEntry);
    if (blacklistEntry && blacklistEntry.expiry > Date.now()) {
      return res.status(401).json({ error: "Token has been invalidated" });
    }

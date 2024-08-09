@@ -11,8 +11,12 @@ const Published = () => {
   const filteredNews = news.filter((item) => item?.newsStatus === "approved");
 
   const getNews = async () => {
-    const res = await fetchData("/news", "get");
-    setNews(res?.news);
+    try {
+      const res = await fetchData("/news", "get");
+      setNews(res?.news);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

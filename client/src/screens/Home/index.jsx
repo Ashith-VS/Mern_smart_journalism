@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 const Home = () => {
   const navigate =useNavigate()
   const {currentUser} =useSelector((state) =>state.AuthenticationReducer)
+  // console.log('currentUser: ', currentUser);
   const [newsData, setNewsData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [media, setMedia] = useState([]);
@@ -51,7 +52,7 @@ const Home = () => {
     setSelectedCategory(data?.name);
     try {
       const res = await fetchData(`/mediaNews/${data?.id}`, 'get');
-      console.log('res: ', res);
+      // console.log('res: ', res);
       // setNewsData(res?.news || []);
       setFilteredNewsData(res?.news || []);
     } catch (error) {
@@ -151,7 +152,9 @@ if(res.status){
                     <h2>{article.title}</h2>
                     <p>{article?.content?.substring(0, 50)}...</p>
                     <a href={`/news/${article?._id}`} className="read-more">Read More</a>
+                    {/* {(currentUser?.role === undefined || currentUser?.role === "user" || currentUser === null)&& */}
                     <button onClick={()=>handleSaveNews(article?._id)} className='btn'><img src={savedItems[article?._id]?savedIcon:saveIcon} alt='' className='img'/></button>
+                    {/* // } */}
                   </div>
                 </div>
               ))

@@ -13,31 +13,19 @@ const Navbar = () => {
  const token=localStorage.getItem('auth_token');
   const [showDropdown, setShowDropdown] = useState(false);
   const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
-
-const getCurrentUser=async()=>{
-  // const tok='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YjMzZjRmNmZjOGEzNWM3OTE2MGQyOSIsImlhdCI6MTcyMzE0MTg2MiwiZXhwIjoxNzIzMTQ1NDYyfQ.uL6kG0_37cvq4OJXAnNfrMtgQbct53qrex1hA2a79Tg'	
-  // localStorage.setItem('auth_token',tok)
-  try {
-    if(token){
-      // console.log('token: ', token);
-    const res = await fetchData('/currentuser','get')
-    // console.log('res: ', res);
-    dispatch(currentUserAuth(res?.user))
-  }
-  } catch (error) {
-    console.error(error)
-  }
-}
+  // console.log('currentUsernavbar: ', currentUser);
 
 useEffect(() => {
-    getCurrentUser()
+  if(token && !currentUser){
+    dispatch(currentUserAuth())
+  }
 }, [])
 
 
 const handleLogout=async()=>{
   try {
     const res = await fetchData("/logout","get")
-    console.log('res: ', res);
+    // console.log('res: ', res);
     // localStorage.clear();
     localStorage.removeItem('auth_token');
     dispatch({type:GET_CURRENT_USER, payload:null})

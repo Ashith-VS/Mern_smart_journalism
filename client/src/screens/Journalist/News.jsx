@@ -10,8 +10,12 @@ const News = () => {
   const [news, setNews] = useState([]);
 
   const getNews = async () => {
-    const res = await fetchData("/news", "get");
-    setNews(res?.news);
+    try {
+      const res = await fetchData("/news", "get");
+      setNews(res?.news);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

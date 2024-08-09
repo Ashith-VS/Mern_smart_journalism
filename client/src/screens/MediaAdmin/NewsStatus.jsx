@@ -16,10 +16,13 @@ const NewsStatus = () => {
     const [newsData, setNewsData] = useState([]);
    
     const getNewsData=async()=>{
-      if(!isEmpty(token)){
-        const res=await fetchData("/allnews","get")
-        // console.log('res: ', res);
-        setNewsData(res?.news)
+      try {
+        if(!isEmpty(token)){
+          const res=await fetchData("/allnews","get")
+          setNewsData(res?.news)
+        }
+      } catch (error) {
+        console.error(error)
       }
     }
 

@@ -82,7 +82,7 @@ const handleChange = (e) => {
   if(!isEmpty(valid)){
     setErrors(valid)
   }else{
-    console.log('formData: ', formData);
+    // console.log('formData: ', formData);
   const res= await dispatch(LoggedUserAuth(formData,navigate))
   console.log('res: ', res);
 

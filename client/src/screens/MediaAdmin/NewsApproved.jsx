@@ -14,10 +14,15 @@ const NewsApproved = () => {
   const [newsData, setNewsData] = useState([]);
 
   const getNewsData = async () => {
-    if (!isEmpty(token)) {
-      const res = await fetchData("/allnews", "get");
-      setNewsData(res?.news);
+    try {
+      if (!isEmpty(token)) {
+        const res = await fetchData("/allnews", "get");
+        setNewsData(res?.news);
+      }
+    } catch (error) {
+      console.error(error);
     }
+   
   };
 
   useEffect(() => {

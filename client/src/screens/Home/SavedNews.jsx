@@ -9,6 +9,7 @@ import fetchData from '../../http/api';
 
 const SavedNews = () => {
     const {currentUser} = useSelector((state)=>state.AuthenticationReducer)
+    // console.log('currentUser: ', currentUser);
     const [savedNews, setSavedNews] = useState([]);
     const [savedItems, setSavedItems] = useState({});
     
@@ -27,22 +28,21 @@ const SavedNews = () => {
 
     useEffect(() => {
         if(currentUser){
-        
-       fetchSavedNews()
+            fetchSavedNews()
         }
        }, [currentUser])
 
-       const handleRemoveSavedNews=async(newsId)=>{
+      const handleRemoveSavedNews=async(newsId)=>{
         if(currentUser){
             try {
               const res = await fetchData('/savednews', 'post', {userId: currentUser?._id,newsId });
-               if(res.status){
+              if(res.status){
             setSavedItems({...savedItems,[newsId]:true});
             fetchSavedNews();
-             }else{
+            }else{
             setSavedItems({...savedItems,[newsId]:false});
             fetchSavedNews();
-               }
+            }
             } catch (error) {
               console.error('Error saving news:', error);
             }

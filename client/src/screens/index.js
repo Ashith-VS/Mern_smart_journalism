@@ -16,6 +16,7 @@ import NewsDetails from "./Home/NewsDetails"
 import SavedNews from "./Home/SavedNews"
 import About from "./About"
 import EditProfile from "./profile/EditProfile"
+import Unauthorized from "./Unauthorised"
 
 export {
     Home,
@@ -35,5 +36,6 @@ export {
     Published,
     NewsApproved,
     NewsRejected,
-    AllNews
+    AllNews,
+    Unauthorized
 }

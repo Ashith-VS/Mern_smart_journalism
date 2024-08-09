@@ -38,9 +38,7 @@ const getMediaAdmins = async (req, res) => {
     }
 }
 
-
 const getJournalistByMediaAdmin = async (req, res) => {
-    console.log('req.id5555: ', req.id);
     try {
         const user = await UserData.find({ mediaAdmin: req.id })
         // console.log('user: ', user);
@@ -85,10 +83,8 @@ const getNewsByJournals = async (req, res) => {
 
 
 const getAllNewsByMediaAdmins = async (req, res) => {
-    // console.log('req.id4444: ', req.id);
     try {
         const news = await NewsData.find({ parent: req.id });
-        // console.log('news: ', news);
         res.status(200).json({ news });
     } catch (error) {
         res.status(500).json({ message: error.message });

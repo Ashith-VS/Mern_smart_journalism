@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
-  console.log('currentUser: ', currentUser);
-
+  // console.log('currentUser: ', currentUser);
   return (
     <div className="d-flex flex-column bg-light vh-100 "style={{padding:"30px"}}>
       <h3 className="p-3">{currentUser?.role==="Journalist"?"Journalist Menu":"Dashboard"}</h3>

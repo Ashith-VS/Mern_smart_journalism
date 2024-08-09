@@ -14,10 +14,9 @@ const SuperAdmin = () => {
   const dispatch=useDispatch()
   const[journalist,setJournalist] = useState(null)
 
-  console.log('journalist: ', journalist);
     const {currentUser} = useSelector((state)=>state.AuthenticationReducer)
     const {getmediaAdmin} = useSelector((state)=>state.NewsReducer)
-    // console.log('getMediaAdmins: ', getmediaAdmin);
+ 
     useEffect(() => {
     dispatch(GetMediaAdmins())
     }, [])
@@ -27,16 +26,18 @@ const SuperAdmin = () => {
     }
 
     const getJournalists=async(id)=>{
-    const res= await fetchData(`/journalist/${id}`,"get")
-setJournalist(res?.user)
+      try {
+        const res= await fetchData(`/journalist/${id}`,"get")
+        setJournalist(res?.user)
+      } catch (error) {
+        console.error(error)
+      }
     }
 
     const handleShow=(id)=>{
       getJournalists(id)
     }
 
-
-    
   return (
     <div>
   <Navbar/>

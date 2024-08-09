@@ -5,7 +5,7 @@ const initialState = {
     AuthFailure: false,
     LoginSuccess:{},
     LoginFailure: false,
-    currentUser:null,
+    currentUser:{},
     token: localStorage.getItem('auth_token')
 }
 // JSON.parse(localStorage.getItem('auth_token'))
