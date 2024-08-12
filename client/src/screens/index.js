@@ -18,6 +18,7 @@ import About from "./About"
 import EditProfile from "./profile/EditProfile"
 import Unauthorized from "./Unauthorised"
 import PageNotFound from "./PageNotFound"
+import Draft from "./Journalist/Draft"
 
 export {
     Home,
@@ -38,6 +39,7 @@ export {
     NewsApproved,
     NewsRejected,
     AllNews,
+    Draft,
     Unauthorized,
     PageNotFound
 }

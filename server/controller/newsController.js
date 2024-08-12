@@ -19,10 +19,21 @@ const uploadMultipleImages = async (req, res) => {
 const newsAdded = async (req, res) => {
     try {
         // console.log('req.body: ', req.body);
-        const { category, location, title, images, video, content, author, parent } = req.body;
-        const news = new NewsData({ category, location, title, images, video, content, author, parent })
+        const { category, location, title, images, video, content, author, parent, newsStatus } = req.body;
+        const news = new NewsData({ category, location, title, images, video, content, author, parent, newsStatus })
         await news.save();
         res.status(200).json({ message: "News added successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const newsUpdate = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { category, location, title, images, video, content, author, parent, newsStatus } = req.body;
+        await NewsData.findByIdAndUpdate(id, { category, location, title, images, video, content, author, parent, newsStatus });
+        res.status(200).json({ message: "News updated successfully" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -144,7 +155,7 @@ const getAllMediasName = async (req, res) => {
 const getAllMediasNews = async (req, res) => {
     try {
         const { id } = req.params
-        const news = await NewsData.find({ parent: id,newsStatus:"approved" });
+        const news = await NewsData.find({ parent: id, newsStatus: "approved" });
         res.status(200).json({ news });
     } catch (error) {
         console.error(error);
@@ -190,13 +201,53 @@ const getSavedNews = async (req, res) => {
     }
 }
 
-const getAllApprovedNews = async(req,res) => {
+const getAllApprovedNews = async (req, res) => {
     try {
-        const news = await NewsData.find({ newsStatus: "approved" });
-        res.status(200).json({ status: true, news });
+        const { page = 1, limit = 10, sortOrder = "asc" } = req.query
+        const skip = (page - 1) * limit;
+        const sortDirection = sortOrder === 'desc' || sortOrder === "descTitle" ? -1 : 1;
+        const sort = {}
+        if (sortOrder === 'asc' || sortOrder === 'desc') {
+            sort.publicationDate = sortDirection
+        } else if (sortOrder === 'ascTitle' || sortOrder === 'descTitle') {
+            sort.title = sortDirection
+        }
+
+        console.log('sort: ', sort);
+        console.log('sortDirection: ', sortDirection);
+
+
+
+        // console.log('skip: ', skip);
+        // Fetch the news data with pagination
+        const news = await NewsData.find({ newsStatus: "approved" })
+            .skip(parseInt(skip))
+            .limit(parseInt(limit))
+            .sort(sort)
+
+
+        // Count the total number of news items
+        const totalNews = await NewsData.countDocuments({ newsStatus: "approved" });
+
+        // Calculate total pages
+        const totalPages = Math.ceil(totalNews / limit);
+
+        res.status(200).json({ status: true, news, Pagination: { currentpage: parseInt(page), totalPages } });
+        //  
     } catch (error) {
         console.error(error);
     }
 }
 
-module.exports = { uploadMultipleImages, newsAdded, getNewsByJournals, getMediaAdmins, getAllNewsByMediaAdmins, getJournalistByMediaAdmin, deleteJournalist, isApproved, isRejected, getAllNews, getJournalist, getAllMediasName, getAllMediasNews, isSavedNews, getSavedNews, getAllApprovedNews }
+const getAllCategories=async(req,res)=>{
+    try {
+        const news= await NewsData.find({newsStatus: "approved"});
+        const categories=news.map(item=>item.category);
+       res.status(200).json({ status: true, categories})
+    } catch (error) {
+        console.error(error);
+        res.status(404).json({ status:"Not Found any categories"});
+    }
+}
+
+module.exports = { uploadMultipleImages, newsAdded, newsUpdate, getNewsByJournals, getMediaAdmins, getAllNewsByMediaAdmins, getJournalistByMediaAdmin, deleteJournalist, isApproved, isRejected, getAllNews, getJournalist, getAllMediasName, getAllMediasNews, isSavedNews, getSavedNews, getAllApprovedNews,getAllCategories }

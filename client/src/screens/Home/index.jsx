@@ -10,6 +10,7 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import Pagination from '../../components/Pagination';
+import moment from 'moment';
 
 const Home = () => {
 
@@ -25,15 +26,18 @@ const Home = () => {
   const [filteredNewsData, setFilteredNewsData] = useState([]);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState({});
+  const [sortOrder, setSortOrder] = useState("asc")
+
    // pagination
 const [page, setPage] = useState(1);
-const [limit, setLimit] = useState(10); 
 const [totalPages, setTotalPages] = useState(0);
+const [limit, setLimit] = useState(3); 
   
   const getNewsData = async () => {
     try {
-      const res = await fetchData('/latestNews', 'get');
+      const res = await fetchData(`/latestNews?page=${page}&limit=${limit}&sortOrder=${sortOrder}`, 'get');
       setNewsData(res?.news || []);
+      setTotalPages(res?.Pagination?.totalPages||0)
       const uniqueCategories = [...new Set(res?.news.map((item) => item.category))];
       setCategories(uniqueCategories);
     } catch (error) {
@@ -44,6 +48,8 @@ const [totalPages, setTotalPages] = useState(0);
   const getAllMedia = async () => {
     try {
       const res = await fetchData('/media', 'get');
+      // const data= await fetchData('/category','get')
+      // setCategories(data?.categories);
       setMedia(res?.media || []);
     } catch (error) {
       console.error('Error fetching media data:', error);
@@ -52,8 +58,11 @@ const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     getNewsData();
+  }, [page,sortOrder]);
+
+  useEffect(() => {
     getAllMedia();
-  }, []);
+  },[]);
 
   
   const handleMediaSelect = async (data) => {
@@ -97,20 +106,24 @@ fetchSavedNews()
 
 
 const handleSaveNews=async(newsId)=>{
-  if(currentUser){
+  if(!isEmpty(currentUser)){
     try {
-      const res = await fetchData('/savednews', 'post', {userId: currentUser?._id,newsId });
-if(res.status){
-  setSavedItems({...savedItems,[newsId]:true});
-}else{
-   setSavedItems({...savedItems,[newsId]:false});
-}
+        const res = await fetchData('/savednews', 'post', {userId: currentUser?._id,newsId });
+        if(res.status){
+          setSavedItems({...savedItems,[newsId]:true});
+        }else{
+           setSavedItems({...savedItems,[newsId]:false});
+        }
     } catch (error) {
       console.error('Error saving news:', error);
     }
   }else{
    setLoginModalOpen(true);
   }
+}
+
+const handleSortChange = (e)=>{
+  setSortOrder(e.target.value)
 }
 
 
@@ -151,16 +164,32 @@ if(res.status){
               Grid View
             </button>
           </div>
-          <h1 className='text-center mb-4'>Latest News</h1>
-
+          <div className="sort-controls d-flex">
+          <label htmlFor="sortOrder" className="form-label ">Sort By:</label>
+          <select
+            id="sortOrder"
+            name="sortOrder"
+            className="form-select"
+            value={sortOrder}
+            onChange={handleSortChange}
+          >
+            <option value="asc">Ascending by Date</option>
+            <option value="desc">Descending by Date</option>
+            <option value="ascTitle">Ascending by Title</option>
+            <option value="descTitle">Descending by Title</option>
+          </select>
+        </div>
+          <h3 className='text-center m-4'>Latest News</h3>
           <div className={`news-container-${viewMode}`}>
             {filteredNewsData.length > 0 ? (
               filteredNewsData.map((article) => (
                 <div className="news-card" key={article?._id}>
+                  
                   <img src={article?.images?.[0]?.url ? `http://localhost:4000/${imagePath(article.images[0].url)}` : 'https://picsum.photos/200'} alt={article?.title} className="news-image"/>
                   <div className="news-content">
                     <h2>{article.title}</h2>
                     <p>{article?.content?.substring(0, 50)}...</p>
+                    <div><span>{moment(article?.publicationDate).format('DD-MM-YYYY')}</span></div>
                     <a href={`/news/${article?._id}`} className="read-more">Read More</a>
                     {/* {(currentUser?.role === undefined || currentUser?.role === "user" || currentUser === null)&& */}
                     <button onClick={()=>handleSaveNews(article?._id)} className='btn'><img src={savedItems[article?._id]?savedIcon:saveIcon} alt='' className='img'/></button>
@@ -172,10 +201,12 @@ if(res.status){
               <p>No news available</p>
             )}
           </div>
-           {/* <Pagination 
+          <div className='pagination-container'>
+           <Pagination 
             currentPage={page} 
             totalPages={totalPages} 
-            onPageChange={(newPage) => setPage(newPage)} /> */}
+            setPage={setPage}
+           /></div>
         </main>
       </div>
 

@@ -101,12 +101,6 @@
   background-color: #0056b3;
 }
 
-/* Grid and list view styling */
-/* .news-container-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-} */
 .news-container-grid {
   display: flex;
   flex-wrap: wrap;
@@ -184,3 +178,52 @@
 overflow: auto;
 }
 
+/* Pagination Container */
+.pagination-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  margin-top: 20px; /* Adjust spacing as needed */
+}
+
+/* Remove default list styles */
+.pagination-wrapper {
+  display: flex;
+  list-style-type: none; /* Ensure no default list styles */
+  padding: 0;
+  margin: 0;
+}
+
+/* Pagination Page Item */
+.pagination-page {
+  margin: 0 5px; /* Space between pagination items */
+}
+
+/* Pagination Link Styles */
+.pagination-link {
+  display: block;
+  padding: 8px 16px;
+  text-decoration: none; /* Remove underline */
+  color: #007bff; /* Link color */
+  border: 1px solid #ddd; /* Border color */
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Pagination Link Hover State */
+.pagination-link:hover {
+  background-color: #007bff; /* Hover background color */
+  color: white; /* Hover text color */
+}
+
+/* Active Page Link Styles */
+.pagination-active .pagination-link {
+  background-color: #007bff; /* Active page background color */
+  color: white; /* Active page text color */
+  border: 1px solid #007bff; /* Active page border color */
+}
+
+/* Disabled Pagination Link Styles */
+.pagination-disabled .pagination-link {
+  color: #ddd; /* Disabled link color */
+  cursor: not-allowed; /* Indicate not clickable */
+}

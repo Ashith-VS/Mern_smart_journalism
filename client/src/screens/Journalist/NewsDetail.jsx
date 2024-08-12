@@ -3,12 +3,15 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import fetchData from "../../http/api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const NewsDetail = () => {
+  const navigate = useNavigate()
   const [news, setNews] = useState([]);
+
   const { id } = useParams();
   const filteredNews = news.find((item) => item?._id === id);
+
 
   const getNews = async () => {
     try {
@@ -22,6 +25,8 @@ const NewsDetail = () => {
   useEffect(() => {
     getNews();
   }, []);
+
+
 
   return (
     <div>
@@ -48,6 +53,7 @@ const NewsDetail = () => {
                   <span className="badge bg-secondary p-3 ">
                     Status: {filteredNews?.newsStatus || "Pending"}
                   </span>
+                  {filteredNews?.newsStatus==="pending" || filteredNews?.newsStatus=== "rejected"?  <button className="btn btn-primary m-3" onClick={()=>{navigate(`/journalist/${id}`)}}>Edit</button>:""}
                 </div>
               </div>
             </div>

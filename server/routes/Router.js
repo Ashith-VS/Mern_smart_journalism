@@ -1,7 +1,7 @@
 const express = require('express')
 const { isRegister, isLogin, isCurrentUser, isChangePassword, isUpdateProfile, isLogOut } = require('../controller/authenticationController')
 const { verifyToken, checkTokenBlacklist } = require('../middleware/VerifyMiddleware')
-const { uploadMultipleImages, newsAdded, getNewsByJournals, getMediaAdmins, getAllNewsByMediaAdmins, getJournalistByMediaAdmin, deleteJournalist, isApproved, isRejected, getAllNews, getJournalist, getAllMediasName, getAllMediasNews, isSavedNews, getSavedNews, getAllApprovedNews } = require('../controller/newsController')
+const { uploadMultipleImages, newsAdded, getNewsByJournals, getMediaAdmins, getAllNewsByMediaAdmins, getJournalistByMediaAdmin, deleteJournalist, isApproved, isRejected, getAllNews, getJournalist, getAllMediasName, getAllMediasNews, isSavedNews, getSavedNews, getAllApprovedNews, newsUpdate, getAllCategories } = require('../controller/newsController')
 const upload = require('../middleware/fileUpload')
 
 const router = express.Router()
@@ -27,12 +27,14 @@ router.post('/rejected/:id', verifyToken, isRejected)
 // journalist
 router.post('/multipleimg', upload.array("photos"), uploadMultipleImages)
 router.post('/news', verifyToken, newsAdded)
+router.put('/news/:id', verifyToken, newsUpdate)
 router.get('/news', verifyToken, getNewsByJournals)
 router.get('/allnews', verifyToken, getAllNewsByMediaAdmins)
 
 // public
 router.get('/latestNews', getAllApprovedNews)
 router.get('/media', getAllMediasName)
+router.get('/category',getAllCategories)
 router.get("/mediaNews/:id", getAllMediasNews)
 router.post('/savednews', verifyToken, isSavedNews)
 router.get("/savedNews/:id", verifyToken, getSavedNews)

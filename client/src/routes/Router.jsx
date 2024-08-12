@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { About, AllNews, EditProfile, Home, Journalist, Login, MediaAdmin, News, NewsApproved, NewsDetail, NewsDetails, NewsRejected, NewsStatus, PageNotFound, Profile, Published, Register, SavedNews, SuperAdmin, Unauthorized } from '../screens';
+import { About, AllNews, Draft, EditProfile, Home, Journalist, Login, MediaAdmin, News, NewsApproved, NewsDetail, NewsDetails, NewsRejected, NewsStatus, PageNotFound, Profile, Published, Register, SavedNews, SuperAdmin, Unauthorized } from '../screens';
 import PrivateRoute from './PrivateRoute';
 
 const Router = () => {
@@ -31,9 +31,11 @@ const Router = () => {
         </Route>
         <Route element={<PrivateRoute roles={['Journalist']} />}>
           <Route path="/journalist" element={<Journalist />} />
+          <Route path="/journalist/:id" element={<Journalist />} />
           <Route path="/journalist/news" element={<News />} />
           <Route path="/journalist/news/:id" element={<NewsDetail />} />
           <Route path="/journalist/published" element={<Published />} />
+          <Route path="/journalist/draft" element={<Draft />} />
         </Route>
         <Route element={<PrivateRoute roles={['user', 'mediaAdmin', 'Journalist', 'superAdmin']} />}>
           <Route path="/profile" element={<Profile />} />

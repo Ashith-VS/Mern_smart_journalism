@@ -5,11 +5,17 @@ import Sidebar from '../../components/Sidebar'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import fetchData from '../../http/api'
-
+import { useParams } from 'react-router-dom'
+import Modal from 'react-modal';
+import { customStyles } from '../../common/common'
 
 const Journalist = () => {
+const {id}=useParams()
 
+
+const [loginModalOpen, setLoginModalOpen] = useState(false);
     const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
+    const [news,setNews]=useState([])
     const[error,setError] =useState({})
     const [formData, setFormData] = useState({
         category: '',
@@ -17,8 +23,39 @@ const Journalist = () => {
         title: '',
         images: [],
         video:"",
-        content: ''
+        content: '',
+        newsStatus:"pending"
     });
+    const getNews = async () => {
+      try {
+        const res = await fetchData("/news", "get");
+        setNews(res?.news);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+const filteredNewsId = news.find(data=>data._id ===id)
+console.log('filteredNewsId: ', filteredNewsId);
+    useEffect(()=>{
+      if (id){
+        getNews()
+      }
+    
+    },[])
+    useEffect(() => {
+      setFormData({
+        category: filteredNewsId?.category || '',
+        location: filteredNewsId?.location || '',
+        title: filteredNewsId?.title || '',
+        images: filteredNewsId?.images || [],
+        video: filteredNewsId?.video || '',
+        content: filteredNewsId?.content || '',
+        newsStatus: filteredNewsId?.newsStatus ||""
+      })
+    }, [news,id])
+
+    
 
       const handleChange = (e) => {
         const { name, value} = e.target;
@@ -81,6 +118,59 @@ const Journalist = () => {
         }
       };
 
+      const handleUpdate=async(e)=>{
+        e.preventDefault();
+        console.log(formData)
+        const valid = handleValidation();
+        if (!isEmpty(valid)) {
+            setError(valid);
+        } else {
+            try {
+                let imageUrls = [];
+    
+                // If images are selected, handle image upload
+                if (formData.images && formData.images.length > 0) {
+                    const form = new FormData();
+                    formData.images.forEach(file => {
+                        form.append("photos", file);
+                    });
+    
+                    // Upload images and get the response with image URLs
+                    const response = await fetchData("/multipleimg", "post", form, { 'Content-Type': 'multipart/form-data' });
+                    imageUrls = response?.newImages;
+                }
+    
+                const submitData = {
+                  ...formData,
+                  author: currentUser?._id,
+                  images: imageUrls,
+                  parent: currentUser?.mediaAdmin,
+                  newsStatus: "pending"
+                };
+                // console.log('submitData: ', submitData);
+    
+                // Update news data
+                await fetchData(`/news/${id}`, "put", submitData);
+                setLoginModalOpen(true);
+         
+    
+                // Reset form data after successful update
+                setFormData({
+                    category: '',
+                    location: '',
+                    title: '',
+                    images: [],
+                    content: '',
+                    newsStatus: ""
+                });
+    
+                // Optionally, redirect or show a success message
+            } catch (error) {
+                console.error(error.message);
+            }
+        }
+      }
+
 
   return (
     <div>
@@ -93,7 +183,7 @@ const Journalist = () => {
             <div className="col-md-12">
               <div className="card" >
                 <div className="card-body mt-2">
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={id ? handleUpdate:handleSubmit}>
                     <div className="mb-3">
                       <label htmlFor="category" className="form-label">Category</label>
                       <input 
@@ -107,7 +197,6 @@ const Journalist = () => {
                       />
                       <span style={{color:"red",fontSize:'14px'}}>{error?.category}</span>
                     </div>
-                   
                     <div className="mb-3">
                     <label htmlFor="location" className="form-label">Location</label>
                       <input
@@ -170,7 +259,7 @@ const Journalist = () => {
                       ></textarea>
                        <span style={{color:"red",fontSize:'14px'}}>{error?.content}</span>
                     </div>
-                    <button type="submit" className="btn btn-primary">Submit</button>
+                    <button type="submit" className="btn btn-primary">{id?'Update':'Submit'}</button>
                   </form>
                 </div>
               </div>
@@ -179,6 +268,17 @@ const Journalist = () => {
         </div>
       </div>
         <Footer/>
+        <Modal isOpen={loginModalOpen} style={customStyles} onRequestClose={() => setLoginModalOpen(false)}>
+        <div className="modal-content align-items-center justify-content-center p-5">
+          <div className="modal-body text-center">
+            <h5 className="modal-title mb-4"></h5>
+            <p>News updated Successfully</p>
+            <div className="modal-footer mt-5 p-2">
+              <button className="btn btn-secondary mx-2" onClick={() => setLoginModalOpen(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }
