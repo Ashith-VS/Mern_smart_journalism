@@ -13,11 +13,9 @@ import Pagination from '../../components/Pagination';
 import moment from 'moment';
 
 const Home = () => {
-
   const token =localStorage.getItem('auth_token');
   const navigate =useNavigate()
   const {currentUser} =useSelector((state) =>state.AuthenticationReducer)
-  // console.log('currentUser: ', currentUser);
   const [newsData, setNewsData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [media, setMedia] = useState([]);
@@ -27,7 +25,6 @@ const Home = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState({});
   const [sortOrder, setSortOrder] = useState("asc")
-
    // pagination
 const [page, setPage] = useState(1);
 const [totalPages, setTotalPages] = useState(0);
@@ -157,13 +154,6 @@ const handleSortChange = (e)=>{
             ))}
           </div>
           <div className="view-mode-toggle">
-            <button onClick={() => setViewMode('list')} className={`view-mode-button ${viewMode === 'list' ? 'active' : ''}`}>
-              List View
-            </button>
-            <button onClick={() => setViewMode('grid')} className={`view-mode-button ${viewMode === 'grid' ? 'active' : ''}`}>
-              Grid View
-            </button>
-          </div>
           <div className="sort-controls d-flex">
           <label htmlFor="sortOrder" className="form-label ">Sort By:</label>
           <select
@@ -179,6 +169,14 @@ const handleSortChange = (e)=>{
             <option value="descTitle">Descending by Title</option>
           </select>
         </div>
+            <button onClick={() => setViewMode('list')} className={`view-mode-button ${viewMode === 'list' ? 'active' : ''}`}>
+              List View
+            </button>
+            <button onClick={() => setViewMode('grid')} className={`view-mode-button ${viewMode === 'grid' ? 'active' : ''}`}>
+              Grid View
+            </button>
+          </div>
+         
           <h3 className='text-center m-4'>Latest News</h3>
           <div className={`news-container-${viewMode}`}>
             {filteredNewsData.length > 0 ? (

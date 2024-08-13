@@ -35,7 +35,7 @@ const Router = () => {
           <Route path="/journalist/news" element={<News />} />
           <Route path="/journalist/news/:id" element={<NewsDetail />} />
           <Route path="/journalist/published" element={<Published />} />
-          <Route path="/journalist/draft" element={<Draft />} />
+          <Route path="/draft" element={<Draft />} />
         </Route>
         <Route element={<PrivateRoute roles={['user', 'mediaAdmin', 'Journalist', 'superAdmin']} />}>
           <Route path="/profile" element={<Profile />} />

@@ -52,7 +52,7 @@ const Sidebar = () => {
           <Link className="nav-link" to="/journalist/published">Published News</Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/journalist/draft">Draft News</Link>
+          <Link className="nav-link" to="/draft">Draft News</Link>
         </li>
         </>}
       </ul>

@@ -1,10 +1,9 @@
 const UserData = require("../model/AuthenticationModel");
-const { ImgCollection, NewsData } = require("../model/NewsModel");
+const { ImgCollection, NewsData, NewsDraft } = require("../model/NewsModel");
 
 const uploadMultipleImages = async (req, res) => {
     try {
         const files = req.files;
-        // console.log('files: ', files);
         const newImages = files.map(file => ({
             url: file.path,
             filename: file.filename
@@ -18,7 +17,6 @@ const uploadMultipleImages = async (req, res) => {
 
 const newsAdded = async (req, res) => {
     try {
-        // console.log('req.body: ', req.body);
         const { category, location, title, images, video, content, author, parent, newsStatus } = req.body;
         const news = new NewsData({ category, location, title, images, video, content, author, parent, newsStatus })
         await news.save();
@@ -213,41 +211,56 @@ const getAllApprovedNews = async (req, res) => {
             sort.title = sortDirection
         }
 
-        console.log('sort: ', sort);
-        console.log('sortDirection: ', sortDirection);
-
-
-
-        // console.log('skip: ', skip);
         // Fetch the news data with pagination
         const news = await NewsData.find({ newsStatus: "approved" })
             .skip(parseInt(skip))
             .limit(parseInt(limit))
             .sort(sort)
 
-
         // Count the total number of news items
         const totalNews = await NewsData.countDocuments({ newsStatus: "approved" });
 
         // Calculate total pages
         const totalPages = Math.ceil(totalNews / limit);
-
         res.status(200).json({ status: true, news, Pagination: { currentpage: parseInt(page), totalPages } });
-        //  
     } catch (error) {
         console.error(error);
     }
 }
 
-const getAllCategories=async(req,res)=>{
+const getAllCategories = async (req, res) => {
     try {
-        const news= await NewsData.find({newsStatus: "approved"});
-        const categories=news.map(item=>item.category);
-       res.status(200).json({ status: true, categories})
+        const news = await NewsData.find({ newsStatus: "approved" });
+        const categories = news.map(item => item.category);
+        res.status(200).json({ status: true, categories })
     } catch (error) {
         console.error(error);
-        res.status(404).json({ status:"Not Found any categories"});
+        res.status(404).json({ status: "Not Found any categories" });
     }
 }
 
-module.exports = { uploadMultipleImages, newsAdded, newsUpdate, getNewsByJournals, getMediaAdmins, getAllNewsByMediaAdmins, getJournalistByMediaAdmin, deleteJournalist, isApproved, isRejected, getAllNews, getJournalist, getAllMediasName, getAllMediasNews, isSavedNews, getSavedNews, getAllApprovedNews,getAllCategories }
+const isDraftNews = async (req, res) => {
+    try {
+        const {title, content, category, images,location,video,draftedby } = req.body.submitDatas
+        const newsDraft = new NewsDraft({ title, content, category, images, location, video, draftedby });
+      await newsDraft.save();
+        res.status(200).json({ status: true,message :"News Drafted Successfully" })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: "failed to adding draft news" });
+    }
+}
+
+const getDraftNews = async (req, res) => {
+    try {
+        const {id} = req.params
+        const drafts = await NewsDraft.find({draftedby: id});
+        res.status(200).json({ status: true,drafts })
+    } catch (error) {
+        console.error(error);
+        res.status(404).json({ status: "Not Found any draft news" });
+    }
+}
+
+
+module.exports = { uploadMultipleImages, newsAdded, newsUpdate, getNewsByJournals, getMediaAdmins, getAllNewsByMediaAdmins, getJournalistByMediaAdmin, deleteJournalist, isApproved, isRejected, getAllNews, getJournalist, getAllMediasName, getAllMediasNews, isSavedNews, getSavedNews, getAllApprovedNews, getAllCategories, isDraftNews, getDraftNews }

@@ -9,7 +9,8 @@ const UserSchema = new mongoose.Schema({
     blocked: { type: Boolean, default: false },
     mediaAdmin: { type: String },
     savedNews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'News' }],
-    image: { type: String }
+    image: { type: String },
+    parent:{ type: String, required: true}
 });
 
 const UserData = mongoose.model('User', UserSchema);

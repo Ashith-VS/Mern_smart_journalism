@@ -11,11 +11,14 @@ import { customStyles } from '../../common/common'
 
 const Journalist = () => {
 const {id}=useParams()
+console.log('id: ', id);
 
 
 const [loginModalOpen, setLoginModalOpen] = useState(false);
     const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
+    const [modalcontent,setModalContent]=useState({})
     const [news,setNews]=useState([])
+    console.log('news: ', news);
     const[error,setError] =useState({})
     const [formData, setFormData] = useState({
         category: '',
@@ -30,13 +33,17 @@ const [loginModalOpen, setLoginModalOpen] = useState(false);
       try {
         const res = await fetchData("/news", "get");
         setNews(res?.news);
+        const resdrafts=await fetchData(`/draftnews/${currentUser._id}`,'get')
+        console.log('resdrafts: ', resdrafts);
+ 
+        setNews(resdrafts?.drafts)
       } catch (error) {
         console.error(error);
       }
     };
 
 const filteredNewsId = news.find(data=>data._id ===id)
-console.log('filteredNewsId: ', filteredNewsId);
+
     useEffect(()=>{
       if (id){
         getNews()
@@ -170,6 +177,42 @@ console.log('filteredNewsId: ', filteredNewsId);
             }
         }
       }
+     
+      
+      const handleDraftNews = async(e)=>{
+        e.preventDefault();
+        if (
+          !formData.title.trim() &&
+          !formData.content.trim() &&
+          !formData.category.trim() &&
+          !formData.location.trim() &&
+          (formData.images.length === 0 || !formData.images) &&
+          !formData.video.trim()
+      ) {
+        setLoginModalOpen(true)
+        setModalContent('At least one field must be filled for the draft.')
+          return;
+      }
+        try {
+          const submitDatas={...formData,draftedby:currentUser?._id}
+          const res=await fetchData('/draftnews',"post",{submitDatas})
+         if(res.status){
+           setLoginModalOpen(true)
+           setModalContent(res?.message)
+           setFormData({
+             category: '',
+             location: '',
+             title: '',
+             images: [],
+             video: '',
+             content: '',
+           })
+         }
+        } catch (error) {
+          console.error(error)
+        }
+      
+      }
 
 
   return (
@@ -259,7 +302,8 @@ console.log('filteredNewsId: ', filteredNewsId);
                       ></textarea>
                        <span style={{color:"red",fontSize:'14px'}}>{error?.content}</span>
                     </div>
-                    <button type="submit" className="btn btn-primary">{id?'Update':'Submit'}</button>
+                    <button type="button" className="btn btn-secondary mx-3" onClick={handleDraftNews}>Draft</button>
+                    <button type="submit" className="btn btn-primary">Submit</button>
                   </form>
                 </div>
               </div>
@@ -272,7 +316,7 @@ console.log('filteredNewsId: ', filteredNewsId);
         <div className="modal-content align-items-center justify-content-center p-5">
           <div className="modal-body text-center">
             <h5 className="modal-title mb-4"></h5>
-            <p>News updated Successfully</p>
+            <p>{modalcontent?modalcontent:'News updated Successfully'}</p>
             <div className="modal-footer mt-5 p-2">
               <button className="btn btn-secondary mx-2" onClick={() => setLoginModalOpen(false)}>Cancel</button>
             </div>
