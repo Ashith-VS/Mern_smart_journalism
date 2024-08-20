@@ -4,32 +4,16 @@
   },
   "category": "Technology",
   "location": "NewDelhi",
-  "title": "the rise of ai",
+  "title": "the rise of ai in development",
   "content": "The rise of AI content has revolutionized various industries, including marketing, journalism, and entertainment. AI technologies can generate articles, create multimedia content, and automate customer service interactions, providing significant efficiency and scalability. This shift has led to the rapid production of high-quality, data-driven content tailored to specific audiences. However, it also raises concerns about authenticity, as AI-generated content can sometimes lack the nuance and creativity of human-created work. Additionally, there are ethical considerations regarding the potential misuse of AI for misinformation or biased content. As AI continues to evolve, it is crucial for creators and consumers to stay informed about its capabilities and\n limitations to ensure responsible and effective use.",
-  "images": [
-    {
-      "filename": "1722580994918-photo-1521032078283-ca2eb1773c0e.avif",
-      "url": "upload\\1722580994918-photo-1521032078283-ca2eb1773c0e.avif",
-      "_id": {
-        "$oid": "66ac80033c5eaf207950b9c5"
-      }
-    },
-    {
-      "filename": "1722580994919-photo-1605142859862-978be7eba909.avif",
-      "url": "upload\\1722580994919-photo-1605142859862-978be7eba909.avif",
-      "_id": {
-        "$oid": "66ac80033c5eaf207950b9c6"
-      }
-    }
-  ],
+  "images": [],
   "video": "",
-  "author": "66ab4c4deb2b6e6fca3badb4",
+  "author": "66bb4aab91815e8e222749fc",
   "publicationDate": {
     "$date": "2024-08-02T06:35:25.755Z"
   },
   "__v": 0,
-  "parent": "66ab297a683283528ea39919",
-  "newsStatus": "rejected"
+  "newsStatus": "approved"
 },
 {
   "_id": {
@@ -41,13 +25,12 @@
   "content": "The latest advancements in artificial intelligence are transforming industries across the globe. From healthcare to finance, AI is making significant impacts.",
   "images": [],
   "video": "",
-  "author": "66ab4c4deb2b6e6fca3badb4",
+  "author": "66bb4aab91815e8e222749fc",
   "newsStatus": "approved",
   "publicationDate": {
     "$date": "2024-08-05T11:23:33.878Z"
   },
-  "__v": 0,
-  "parent": "66ab297a683283528ea39919"
+  "__v": 0
 },
 {
   "_id": {
@@ -60,7 +43,6 @@
   "images": [],
   "video": "",
   "author": "66b0cb4cb9758a9d5bc3120d",
-  "parent": "66ab297a683283528ea39919",
   "newsStatus": "approved",
   "publicationDate": {
     "$date": "2024-08-05T13:04:15.558Z"
@@ -86,7 +68,6 @@
   ],
   "video": "",
   "author": "66b1b6d305633853f3cefe00",
-  "parent": "66b058feebdbbc88d72f88cb",
   "newsStatus": "approved",
   "publicationDate": {
     "$date": "2024-08-06T07:17:16.171Z"
@@ -112,7 +93,6 @@
   ],
   "video": "",
   "author": "66b1b6d305633853f3cefe00",
-  "parent": "66b058feebdbbc88d72f88cb",
   "newsStatus": "approved",
   "publicationDate": {
     "$date": "2024-08-06T07:17:16.171Z"
@@ -138,10 +118,77 @@
   ],
   "video": "https://www.example.com/world-cup-highlights",
   "author": "66b1b6d305633853f3cefe00",
-  "parent": "66b058feebdbbc88d72f88cb",
   "newsStatus": "approved",
   "publicationDate": {
     "$date": "2024-08-06T07:17:16.171Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66bae1f1aa027794934db34e"
+  },
+  "category": "Technology",
+  "location": "nnjne",
+  "title": "lnjn",
+  "content": "wk sks dkdk",
+  "images": [],
+  "video": "",
+  "author": "66bb4aab91815e8e222749fc",
+  "newsStatus": "rejected",
+  "publicationDate": {
+    "$date": "2024-08-13T04:19:57.753Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66bae2a7e4a79fe307cbddc0"
+  },
+  "category": "Technology",
+  "location": "NewDelhi",
+  "title": " nnkknkbkbk",
+  "content": "kkbkb",
+  "images": [],
+  "video": "",
+  "author": "66bb4aab91815e8e222749fc",
+  "newsStatus": "rejected",
+  "publicationDate": {
+    "$date": "2024-08-13T04:34:23.119Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66bae2fbe4a79fe307cbddc2"
+  },
+  "category": "Technology",
+  "location": "NewDelhi",
+  "title": "frfr",
+  "content": "fnrfk2bf rifb2i",
+  "images": [],
+  "video": "",
+  "author": "66bb4aab91815e8e222749fc",
+  "newsStatus": "pending",
+  "publicationDate": {
+    "$date": "2024-08-13T04:34:23.119Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66bb28cf64b564c26d913ac4"
+  },
+  "category": "Technology",
+  "location": "Bangalore",
+  "title": "ajd dkkd kdjkj",
+  "content": "dbivu dwhiygyi diwcyi 2geyg2i 1yigvbfqh dhig",
+  "images": [],
+  "video": "",
+  "author": "66bb4aab91815e8e222749fc",
+  "newsStatus": "",
+  "publicationDate": {
+    "$date": "2024-08-13T09:33:23.027Z"
   },
   "__v": 0
 }]
