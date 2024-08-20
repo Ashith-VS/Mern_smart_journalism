@@ -46,7 +46,7 @@ return new Promise(async(resolve, reject) => {
         reject(new Error(errorMessage));
     } finally {
         activeRequests--;
-        console.log(`Request finished. Active requests: ${activeRequests}`);
+        // console.log(`Request finished. Active requests: ${activeRequests}`);
         if (activeRequests === 0) {
             dispatch(showLoader(false));
         }

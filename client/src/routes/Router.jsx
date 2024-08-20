@@ -46,7 +46,6 @@ return (
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/saved" element={<SavedNews />} />
         </Route>
-
 {/* Unauthorized Route */}
         <Route path="/unauthorized" element={<Unauthorized />} />
 </Routes>

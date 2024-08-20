@@ -191,4 +191,71 @@
     "$date": "2024-08-13T09:33:23.027Z"
   },
   "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c42fbee8455fe98f9c91f1"
+  },
+  "category": "Weather",
+  "location": "Bangalore",
+  "title": "digudyfgvujhbk",
+  "content": "kjhigufydt uguew",
+  "images": [],
+  "video": "",
+  "author": "66c42ef1e8455fe98f9c91e2",
+  "newsStatus": "",
+  "publicationDate": {
+    "$date": "2024-08-20T05:19:43.183Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c43286d25d11754469bf76"
+  },
+  "category": "Technology",
+  "location": "NewDelhi",
+  "title": "hello world",
+  "content": "ljfbhiwql nkjwhi  ehirie hiebk",
+  "images": [
+    {
+      "filename": "1724134022446-images.jpg",
+      "url": "upload\\1724134022446-images.jpg",
+      "_id": {
+        "$oid": "66c43286d25d11754469bf77"
+      }
+    }
+  ],
+  "video": "",
+  "author": "66c431c3e8455fe98f9c923e",
+  "newsStatus": "approved",
+  "publicationDate": {
+    "$date": "2024-08-20T06:07:00.501Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c438fceddd7dbff74b51b0"
+  },
+  "category": "Technology",
+  "location": "NewDelhi",
+  "title": "welcome",
+  "content": "vwcvh ekjbhkw enkjbhikbjnlkm ",
+  "images": [
+    {
+      "filename": "1724135676508-istockphoto-1429064821-170667a.webp",
+      "url": "upload\\1724135676508-istockphoto-1429064821-170667a.webp",
+      "_id": {
+        "$oid": "66c438fceddd7dbff74b51b1"
+      }
+    }
+  ],
+  "video": "",
+  "author": "66c431c3e8455fe98f9c923e",
+  "newsStatus": "approved",
+  "publicationDate": {
+    "$date": "2024-08-20T06:27:58.711Z"
+  },
+  "__v": 0
 }]

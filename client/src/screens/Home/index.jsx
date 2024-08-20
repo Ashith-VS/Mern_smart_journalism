@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import networkRequest from '../../http/api';
-import { customStyles, imagePath } from '../../common/common';
+import { customStyles, imagePath, settings } from '../../common/common';
 import saveIcon from "../../assets/images/save-instagram.png"
 import savedIcon from "../../assets/images/bookmark.png"
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,10 +13,10 @@ import Pagination from '../../components/Pagination';
 import moment from 'moment';
 import { urlEndPoint } from '../../http/apiConfig';
 import { getAllNewsData } from '../../Redux/Action/PublicAction';
+import Slider from 'react-slick';
 
 const Home = () => {
   const dispatch =useDispatch()
-  const token =localStorage.getItem('auth_token');
   const navigate =useNavigate()
   const {currentUser} =useSelector((state) =>state.AuthenticationReducer)
   const [newsData, setNewsData] = useState([]);
@@ -28,11 +28,12 @@ const Home = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [savedItems, setSavedItems] = useState({});
   const [sortOrder, setSortOrder] = useState("asc")
-   // pagination
-const [page, setPage] = useState(1);
-const [totalPages, setTotalPages] = useState(0);
-const [limit, setLimit] = useState(3); 
-
+  const token =localStorage.getItem('auth_token');
+  // pagination
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [limit, setLimit] = useState(3); 
+  
 const {latestNews} =useSelector(state=>state.PublicReducer)
 
 useEffect(()=>{
@@ -66,10 +67,11 @@ useEffect(() => {
   
   const handleMediaSelect = async (data) => {
     setSelectedCategory(data?.name);
-    const url = urlEndPoint.filterNews(data?.id)
+    const url = urlEndPoint.filterNews(data?.id,page,limit)
     try {
       const res = await networkRequest({url},dispatch);
       setFilteredNewsData(res?.news || []);
+      setTotalPages(res?.pagination?.totalPages)
     } catch (error) {
       console.error(error);
     }
@@ -123,7 +125,7 @@ const handleSaveNews=async(newsId)=>{
   return (
     <div>
       <Navbar />
-      <div className="home" style={{height:'100vh'}}>
+      <div className="home" >
         <div className="sidebar">
       <h3>All Medias</h3>
       {media?.map((item) => (
@@ -178,8 +180,28 @@ const handleSaveNews=async(newsId)=>{
             {filteredNewsData.length > 0 ? (
               filteredNewsData.map((article) => (
                 <div className="news-card" key={article?._id}>
-                  
-                  <img src={article?.images?.[0]?.url ? `http://localhost:4000/${imagePath(article.images[0].url)}` : 'https://picsum.photos/200'} alt={article?.title} className="news-image"/>
+    {article?.images?.length > 1 ? (
+    <Slider {...settings} className="news-image">
+      {article?.images.map((image, index) => (
+        <img
+          src={`http://localhost:4000/${imagePath(image.url)}`}
+          alt={article?.title}
+          className="news-image"
+          key={index}
+        />
+      ))}
+    </Slider>
+  ) : ( (!isEmpty(article?.images)? 
+    <img
+      src={`http://localhost:4000/${imagePath(article?.images[0]?.url)}`}
+      alt={article?.title}
+      className="news-image"
+    />: <img
+    src="https://picsum.photos/200"
+    alt={article?.title}
+    className="news-image"
+  />)
+  )}
                   <div className="news-content">
                     <h2>{article.title}</h2>
                     <p>{article?.content?.substring(0, 50)}...</p>
@@ -190,7 +212,8 @@ const handleSaveNews=async(newsId)=>{
                 </div>
               ))
             ) : (
-              <p>No news available</p>
+              
+              <p className='no-data'>No news available</p>
             )}
           </div>
           <div className='pagination-container'>

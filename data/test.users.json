@@ -7,10 +7,10 @@
   "mobile": "9898989898",
   "password": "$2b$10$EEZ5rV.smaQ54qxeHy/hwOiFiV36C35j7h4Fj.rOMM2wB3HBt3aV2",
   "role": "superAdmin",
-  "__v": 5,
+  "__v": 9,
   "savedNews": [
     {
-      "$oid": "66ac80033c5eaf207950b9c4"
+      "$oid": "66b0bb67596e2684d9662695"
     }
   ],
   "blocked": false,
@@ -211,4 +211,68 @@
   "parent": "66aa34d7ebab6d1fc0a1c78d",
   "mustResetPassword": false,
   "__v": 2
+},
+{
+  "_id": {
+    "$oid": "66c42dd0e8455fe98f9c91d6"
+  },
+  "name": "news74",
+  "email": "visakhr3093@gmail.com",
+  "mobile": "4484498798",
+  "password": "$2b$10$NqCcve3e.San/5cY.FstV.LaK8OoUqC3wYFnfkErqoSnsB4HsypWC",
+  "role": "mediaAdmin",
+  "blocked": false,
+  "status": "active",
+  "savedNews": [],
+  "parent": "66aa34d7ebab6d1fc0a1c78d",
+  "mustResetPassword": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c42ef1e8455fe98f9c91e2"
+  },
+  "name": "akhil",
+  "email": "text@mailnator.com",
+  "mobile": "5498498787",
+  "password": "$2b$10$ow1yep4ZRNSGRXH/EspoeeCz8CDniL7T/JUC2VsV/oOS2xgpWkc4W",
+  "role": "Journalist",
+  "blocked": false,
+  "status": "active",
+  "savedNews": [],
+  "parent": "66c42dd0e8455fe98f9c91d6",
+  "mustResetPassword": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c4310be8455fe98f9c9232"
+  },
+  "name": "newsText",
+  "email": "text@mailinator.com",
+  "mobile": "7987945612",
+  "password": "$2b$10$6sJtsnFZuxyq0dt1vBoHZ.v5O0lDCJMHfgGXeczYTdntopQrV8vvK",
+  "role": "mediaAdmin",
+  "blocked": false,
+  "status": "active",
+  "savedNews": [],
+  "parent": "66aa34d7ebab6d1fc0a1c78d",
+  "mustResetPassword": false,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66c431c3e8455fe98f9c923e"
+  },
+  "name": "textjournalist",
+  "email": "text12345@mailinator.com",
+  "mobile": "5498798744",
+  "password": "$2b$10$qS5InllNreFZ5jXXIAK2Le7Q2LvrVs4rqZ/JJGyCHGqPWu0W7yRE2",
+  "role": "Journalist",
+  "blocked": false,
+  "status": "active",
+  "savedNews": [],
+  "parent": "66c4310be8455fe98f9c9232",
+  "mustResetPassword": false,
+  "__v": 0
 }]

@@ -1,4 +1,4 @@
-const { NewsData, NewsDraft } = require("../model/NewsModel");
+const { NewsData, NewsDraft, ImgCollection } = require("../model/NewsModel");
 
 const getNewsByJournals = async (req, res) => {
     try {

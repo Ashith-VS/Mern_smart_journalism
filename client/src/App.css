@@ -208,6 +208,9 @@ overflow: auto;
   border-radius: 4px;
   transition: background-color 0.3s, color 0.3s;
 }
+.pagination-link:empty {
+  display: none;
+}
 
 /* Pagination Link Hover State */
 .pagination-link:hover {
@@ -277,4 +280,22 @@ overflow: auto;
   100% {
     transform: rotate(360deg);
   }
+}
+
+.img-class{
+  min-height: 300px;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+.outer-div{
+  height: fit-content;
+  min-height: 80vh;
+}
+.no-data{
+  min-height: 50vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+
 }

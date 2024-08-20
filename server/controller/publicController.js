@@ -12,18 +12,55 @@ const getAllApprovedNews = async (req, res) => {
         } else if (sortOrder === 'ascTitle' || sortOrder === 'descTitle') {
             sort.title = sortDirection
         }
-        // Fetch the news data with pagination
-        const news = await NewsData.find({ newsStatus: "approved" })
+        // Fetch users who are not deleted or blocked
+        const users = await UserData.find({
+            status: { $ne: 'deleted' },
+            blocked: { $ne: true }
+        });
+        const filterId = users.map(item => item.id);
+        // Fetch the news data with pagination and sorting
+        const news = await NewsData.find({
+            newsStatus: 'approved',
+            author: { $in: filterId } // Filter news by the IDs of active and unblocked users
+        })
             .skip(parseInt(skip))
             .limit(parseInt(limit))
-            .sort(sort)
+            .sort(sort);
         // Count the total number of news items
-        const totalNews = await NewsData.countDocuments({ newsStatus: "approved" });
+        const totalNews = await NewsData.countDocuments({ newsStatus: "approved", author: filterId });
         // Calculate total pages
-        const totalPages = Math.ceil(totalNews / limit);
-        res.status(200).json({ status: true, news, Pagination: { currentpage: parseInt(page), totalPages } });
+        const totalPages = Math.ceil(totalNews / parseInt(limit));
+        res.status(200).json({ status: true, news, Pagination: { currentpage: parseInt(page), totalPages, totalItems: totalNews, itemsPerPage: parseInt(limit) } });
     } catch (error) {
         console.error(error);
+        res.status(500).json({ error: 'An error occurred while fetching approved news' });
+    }
+}
+
+const getAllMediasNews = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { page = 1, limit = 10 } = req.query
+        const skip = (page - 1) * limit;
+        const user = await UserData.find({ parent: id, status: { $ne: 'deleted' }, blocked: { $ne: true } })
+        const filterId = user.map(item => item.id)
+
+        // Get the total count of approved news items
+        const totalNewsCount = await NewsData.countDocuments({
+            author: { $in: filterId },
+            newsStatus: "approved"
+        });
+        // Fetch the news items for the current page
+        const news = await NewsData.find({ author: filterId, newsStatus: "approved" })
+            .skip(parseInt(skip))
+            .limit(parseInt(limit))
+
+        // Calculate total pages
+        const totalPages = Math.ceil(totalNewsCount / parseInt(limit));
+        res.status(200).json({ news, pagination: { currentpage: parseInt(page), totalPages, totalItems: totalNewsCount, itemsPerPage: parseInt(limit) } });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while fetching news' });
     }
 }
 
@@ -39,17 +76,7 @@ const getAllMediasName = async (req, res) => {
     }
 }
 
-const getAllMediasNews = async (req, res) => {
-    try {
-        const { id } = req.params
-        const user = await UserData.find({ parent: id })
-        const filterId = user.map(item => item.id)
-        const news = await NewsData.find({ author: filterId, newsStatus: "approved" });
-        res.status(200).json({ news });
-    } catch (error) {
-        console.error(error);
-    }
-}
+
 
 const getSavedNews = async (req, res) => {
     try {
