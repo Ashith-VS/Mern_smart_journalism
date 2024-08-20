@@ -30,7 +30,7 @@ To run the app with pre-configured users, follow these steps:
      ```json
      {
        "email": "user@example.com",
-       "password": "123456"
+       "password": "123456" //or 123456789
      }
      ```
 
@@ -40,7 +40,7 @@ To run the app with pre-configured users, follow these steps:
 ### Example User Login Credentials
 
 - **Email:** user@example.com
-- **Password:** 123456
+- **Password:** 123456 or 123456789
 
 Use these credentials to log in and test the application.
 

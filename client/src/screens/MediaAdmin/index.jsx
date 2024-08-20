@@ -21,7 +21,6 @@ const MediaAdmin = () => {
       const url =urlEndPoint.getJournals
       try {
         const res = await networkRequest({url},dispatch);
-        // console.log('res: ', res);
         setUser(res?.users);
       } catch (error) {
         console.error('Error fetching journalists:', error);

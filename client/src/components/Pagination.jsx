@@ -17,7 +17,7 @@ const Pagination = ({currentPage,totalPages,setPage}) => {
       marginPagesDisplayed={2}
       onPageChange={handlePageClick}
       previousLabel={currentPage === 1 ? "" : "< previous "}
-      nextLabel={currentPage ===totalPages? "": "Next >"}
+      nextLabel={currentPage === totalPages? "": "Next >"}
       previousLinkClassName="pagination-link"
       nextLinkClassName="pagination-link"
       containerClassName="pagination-wrapper"

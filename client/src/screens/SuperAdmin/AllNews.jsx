@@ -3,11 +3,12 @@ import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
 import networkRequest from '../../http/api';
-import { getFirstLine } from '../../common/common';
+import { getFirstLine, imagePath, settings } from '../../common/common';
 import { Link, useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { urlEndPoint } from '../../http/apiConfig';
 import { useDispatch } from 'react-redux';
+import Slider from 'react-slick';
 
 const AllNews = () => {
   const dispatch =useDispatch()
@@ -59,11 +60,25 @@ const filteredNews = news?.find((item)=>item._id ===id)
              <div className="row">
         <div className="col-md-12">
         <div className="card-body">
+        <div style={{display:'flex',justifyContent:'center'}}>
+              {filteredNews?.images?.length >1 ? 
+            <Slider {...settings} className="news-image">
+      {filteredNews?.images?.map((image, index) => (
+        <img
+          src={`http://localhost:4000/${imagePath(image.url)}`}
+          alt={filteredNews?.title}
+          key={index}
+        />
+      ))}
+    </Slider> :( !isEmpty(filteredNews?.images)&&  <img
+          src={`http://localhost:4000/${imagePath(filteredNews?.images[0]?.url)}`}
+          alt={filteredNews?.title}
+        />)}</div>
           <div className="mb-4">
           <p ><strong>Category : </strong>{filteredNews?.category}</p>
           <p><strong>Location : </strong>{filteredNews?.location}</p>
           <p><strong>Author ID : </strong>{filteredNews?.author}</p>
-<img src={filteredNews?.images[0]?.url} alt="" />
+         <img src={filteredNews?.images[0]?.url} alt="" />
           </div>
           <p className="mb-1">{filteredNews?.content}</p>
           <div className="mt-5">

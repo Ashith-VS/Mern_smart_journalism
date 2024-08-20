@@ -30,25 +30,30 @@ const [loginModalOpen, setLoginModalOpen] = useState(false);
     });
     const getNews = async () => {
       try {
+         // Fetch published news
         const url =urlEndPoint.getnewsbyJournalist
-        const res = await networkRequest({url},dispatch);
-        setNews(res?.news);
+        const publishedNewsResponse =  await networkRequest({url},dispatch);
+        const publishedNews = publishedNewsResponse?.news || [];
+           // Fetch draft news
         const urls=urlEndPoint.getdraftNewss(currentUser?._id)
-        const resdrafts=await networkRequest({url:urls},dispatch);
-        setNews(resdrafts?.drafts)
+        const draftsResponse=await networkRequest({url:urls},dispatch);
+        const drafts = draftsResponse?.drafts || [];
+          // Combine published and draft news
+    const combinedNews = [...publishedNews, ...drafts];
+    setNews(combinedNews);
       } catch (error) {
         console.error(error);
       }
     };
 
-const filteredNewsId = news.find(data=>data._id ===id)
+const filteredNewsId = news?.find(data=>data?._id ===id)
+
 
     useEffect(()=>{
       if (id){
         getNews()
       }
-    
-    },[])
+    },[id])
     useEffect(() => {
       setFormData({
         category: filteredNewsId?.category || '',

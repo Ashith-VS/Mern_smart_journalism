@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { isEmpty } from 'lodash';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,15 +6,22 @@ import { LoggedUserAuth } from '../../Redux/Action/AuthenticationAction';
 import {AUTH_LOGIN_FAILURE } from '../../common/constant';
 
 const Login = () => {
+const {currentUser} =useSelector((state) =>state.AuthenticationReducer)
+const token = localStorage.getItem('auth_token');
 const navigate =useNavigate()
 const dispatch=useDispatch()
 const {LoginFailure} = useSelector((state)=>state.AuthenticationReducer)
-
 const [errors, setErrors] = useState({});
 const [formData, setFormData] = useState({
   email: "",
   password: "",
 });
+
+useEffect(() => {
+  if (token && !isEmpty(currentUser)) {    
+   navigate("/") //current user login  once then not allowed to login again
+  } 
+}, []);
 
 const inputs = [
     {

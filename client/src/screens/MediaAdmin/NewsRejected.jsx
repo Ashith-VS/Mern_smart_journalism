@@ -5,9 +5,10 @@ import Navbar from "../../components/Navbar";
 import { isEmpty } from "lodash";
 import networkRequest from "../../http/api";
 import Modal from "react-modal";
-import { customStyles } from "../../common/common";
+import { customStyles, imagePath, settings } from "../../common/common";
 import { useDispatch } from "react-redux";
 import { urlEndPoint } from "../../http/apiConfig";
+import Slider from "react-slick";
 
 const NewsRejected = () => {
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const NewsRejected = () => {
                       <tr>
                         <th>Title</th>
                         <th>Category</th>
+                        <th>Images</th>
                         <th>Author ID</th>
                         <th>Action</th>
                       </tr>
@@ -75,6 +77,21 @@ const NewsRejected = () => {
                           <tr key={event?._id}>
                             <td>{event?.title}</td>
                             <td>{event?.category}</td>
+                            {event?.images?.length >1?
+                            <Slider {...settings} className="news-image">
+      {event?.images?.map((image, index) => (
+        <img
+          src={`http://localhost:4000/${imagePath(image.url)}`}
+          alt={event?.title}
+          key={index}
+        />
+      ))}
+    </Slider>:(!isEmpty(event?.images)?
+    <img
+      src={`http://localhost:4000/${imagePath(event?.images[0]?.url)}`}
+      alt={event?.title}
+      className="news-image"
+    />:"no images")}
                             <td>{event?.author}</td>
                             <td>
                               <button
@@ -111,10 +128,27 @@ const NewsRejected = () => {
         <div className="modal-content align-items-center justify-content-center">
           <div className="modal-body text-center">
             <h5 className="modal-title mb-4">{selectedNews?.title}</h5>
+            <div style={{display:'flex',justifyContent:'center'}}>
+              {selectedNews?.images?.length >1 ?
+            <Slider {...settings} className="news-image">
+      {selectedNews?.images?.map((image, index) => (
+        <img
+          src={`http://localhost:4000/${imagePath(image.url)}`}
+          alt={selectedNews?.title}
+          key={index}
+        />
+      ))}
+    </Slider>:(!isEmpty(selectedNews?.images)&&
+    <img
+      src={`http://localhost:4000/${imagePath(selectedNews?.images[0]?.url)}`}
+      alt={selectedNews?.title}
+      className="news-image"
+    />)}</div>
             <div
               className="modal-details  d-flex mb-4 p-4"
               style={{ flexDirection: "column", alignItems: "flex-start" }}
             >
+             
               <p>
                 <strong>Category:</strong> {selectedNews?.category}
               </p>
