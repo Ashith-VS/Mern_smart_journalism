@@ -1,25 +1,12 @@
-import { GET_ALL_JOURNALIST, GET_ALL_MEDIA_ADMIN, NEWS_ADD_FAILURE, NEWS_ADD_SUCCESS } from "../../common/constant";
-import fetchData from "../../http/api";
-
-export const NewsAdded=(news)=>{
-    return async(dispatch)=>{
-        try {
-            const res = await fetchData("/news","post",news)
-            if (res.status === 200) {
-                dispatch({ type: NEWS_ADD_SUCCESS, payload: res });
-            } else {
-                dispatch({ type: NEWS_ADD_FAILURE, payload: res.message });
-            }
-        } catch (err) {
-            console.error(err.message)
-        }
-    }
-}
+import {GET_ALL_MEDIA_ADMIN} from "../../common/constant";
+import networkRequest from "../../http/api";
+import { urlEndPoint } from "../../http/apiConfig";
 
 export const  GetMediaAdmins=()=>{
     return async(dispatch)=>{
+        const url =urlEndPoint.getMediaAdmin
         try { 
-           const res=await fetchData('/mediaAdmins',"get") 
+           const res=await networkRequest({url},dispatch) 
             if (res) {
                 dispatch({ type: GET_ALL_MEDIA_ADMIN, payload: res?.mediaAdmins });
             }
@@ -29,16 +16,5 @@ export const  GetMediaAdmins=()=>{
     }
 }
 
-export const GetJournalists =()=>{
-    return async(dispatch)=>{
-    try {
-        const res =await fetchData('/journalist',"get")
-        if (res) {
-            dispatch({ type: GET_ALL_JOURNALIST, payload: res?.journalists });
-        }
-    } catch (error) {
-        console.error(error.message)
-    }
-}
-}
+
 

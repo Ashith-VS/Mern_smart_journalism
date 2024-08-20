@@ -1,10 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
 import Sidebar from '../../components/Sidebar'
 import Footer from '../../components/Footer'
+import networkRequest from '../../http/api'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { getFirstLine } from '../../common/common'
+import { urlEndPoint } from '../../http/apiConfig'
+
 
 const Draft = () => {
+  const dispatch =useDispatch()
+    const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
+    const [draftNews, setDraftNews] = useState([])
+
+    const getDraft = async() =>{
+        try {
+          const url =urlEndPoint.getdraftNewss(currentUser?._id)
+            const res = await networkRequest({url},dispatch)
+          setDraftNews(res?.drafts)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    useEffect(()=>{
+        getDraft()
+    },[])
     
+
   return (
     <div>
     <Navbar />
@@ -20,20 +44,23 @@ const Draft = () => {
               </div>
               <div className="card-body">
                 <ul className="list-group">
-                  {/* {filteredNews?.map((item) => {
+                  {draftNews?.map((item) => {
                     return (
-                      <li className="list-group-item">
-                        <h6 className="mb-1">{item?.title}</h6>
-                        <p className="mb-1">{getFirstLine(item?.content)}</p>
+                      <li className="list-group-item" key={item?._id}>
+                        <h6 className="mb-1">{item?.title?'Title :'+item?.title:"" }</h6>
+                        <h6 className="mb-1">{item?.location?'Location :'+item?.location:"" }</h6>
+                        <h6 className="mb-1">{item?.category?'Category :'+item?.category:"" }</h6>
+                        <p className="mb-1">{item.content?'Content:'+getFirstLine(item?.content):""}</p>
+                        <img src={item?.images}/>
                         <Link
-                          to={`/journalist/news/${item?._id}`}
+                          to={`/journalist/${item?._id}`}
                           className="btn btn-primary btn-sm"
                         >
-                          Read More
+                          View
                         </Link>
                       </li>
                     );
-                  })} */}
+                  })}
                 </ul>
               </div>
             </div>

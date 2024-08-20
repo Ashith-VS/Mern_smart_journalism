@@ -1,4 +1,4 @@
-import { AUTH_CREATE_FAILURE, AUTH_CREATE_SUCCESS, AUTH_LOGIN_FAILURE, AUTH_LOGIN_SUCCESS, GET_CURRENT_USER } from "../../common/constant";
+import { AUTH_CREATE_FAILURE, AUTH_CREATE_SUCCESS, AUTH_LOGIN_FAILURE, AUTH_LOGIN_SUCCESS, GET_CURRENT_USER, LOADER_ACTION } from "../../common/constant";
 
 const initialState = {
     AuthSuccess: {},
@@ -6,7 +6,8 @@ const initialState = {
     LoginSuccess:{},
     LoginFailure: false,
     currentUser:{},
-    token: localStorage.getItem('auth_token')
+    token: localStorage.getItem('auth_token'),
+    isLoading:false
 }
 // JSON.parse(localStorage.getItem('auth_token'))
 export default function AuthenticationReducer(state=initialState,action){
@@ -39,7 +40,11 @@ case AUTH_LOGIN_FAILURE :
             ...state,
              currentUser:action.payload,
             }
-           
+    case LOADER_ACTION:
+        return {
+           ...state,
+            isLoading:action.payload
+        }   
     default:
         return state;
   }

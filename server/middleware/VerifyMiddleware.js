@@ -10,16 +10,17 @@ function verifyToken(req, res, next) {
   const token = authHeader.split(" ")[1];
   if (!token) return res.status(401).json({ error: "Token missing" });
 
-   // Check if token is blacklisted and not expired
-   const blacklistEntry = blacklistedTokens.get(token);
-   if (blacklistEntry && blacklistEntry.expiry > Date.now()) {
-     return res.status(401).json({ error: "Token has been invalidated" });
-   }
+  // Check if token is blacklisted and not expired
+  const blacklistEntry = blacklistedTokens.get(token);
+  if (blacklistEntry && blacklistEntry.expiry > Date.now()) {
+    return res.status(401).json({ error: "Token has been invalidated" });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // console.log('decoded44: ', decoded);
     req.id = decoded.id;
+
     next();
   } catch (error) {
     // console.log('error: ', error);
@@ -57,4 +58,4 @@ function cleanupExpiredTokens() {
 // Set up periodic cleanup (e.g., every hour)
 setInterval(cleanupExpiredTokens, 3600000); // Run every hour
 
-module.exports = { verifyToken, checkTokenBlacklist,blacklistToken};
+module.exports = { verifyToken, checkTokenBlacklist, blacklistToken };

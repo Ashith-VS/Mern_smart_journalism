@@ -82,10 +82,7 @@ const handleChange = (e) => {
   if(!isEmpty(valid)){
     setErrors(valid)
   }else{
-    // console.log('formData: ', formData);
   const res= await dispatch(LoggedUserAuth(formData,navigate))
-  console.log('res: ', res);
-
   }
   }
 
@@ -113,7 +110,7 @@ return (
                 )}
                 <h4 className="mt-1 mb-5 pb-1">Login</h4>
               </div>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} autoComplete='false'>
                 {inputs.map((item, i) => renderedInputs(item, i))}
                 <div className="d-flex justify-content-end mb-3 ">
                   <button className="btn btn-primary" type="submit" >Submit</button>

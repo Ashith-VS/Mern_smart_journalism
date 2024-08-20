@@ -1,28 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import { useParams } from 'react-router-dom'
-import fetchData from '../../http/api'
 import { imagePath } from '../../common/common'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAllNewsData } from '../../Redux/Action/PublicAction'
 
 const NewsDetails = () => {
+  const {latestNews}=useSelector(state=>state.PublicReducer)
+  const dispatch=useDispatch()
   const { id } = useParams()
-  const [news, setNews] = useState([])
-
-  const getNewsData = async () => {
-    try {
-      const res = await fetchData('/latestNews', 'get');
-      setNews(res?.news || []);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
-    getNewsData()
+    dispatch(getAllNewsData())
   }, [])
-
-  const filteredNews = news.find((item) => item?._id === id)
+  
+  const filteredNews = latestNews?.news?.find((item) => item?._id === id)
   
   return (
     <div>

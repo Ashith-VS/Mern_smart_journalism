@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { GET_CURRENT_USER } from '../../common/constant'
-import fetchData from '../../http/api'
+import networkRequest from '../../http/api'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import { fileToBase64 } from '../../common/common'
@@ -46,7 +46,7 @@ const EditProfile = () => {
       const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-          const res = await fetchData('/updateProfile', 'post', { formData });
+          const res = await networkRequest('/auth/updateProfile', 'post', { formData });
           if (res) {
             dispatch({ type: GET_CURRENT_USER, payload: res.user });
             navigate('/profile');

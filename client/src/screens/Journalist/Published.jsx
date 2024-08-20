@@ -2,17 +2,21 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import Footer from "../../components/Footer";
-import fetchData from "../../http/api";
+import networkRequest from "../../http/api";
 import { Link } from "react-router-dom";
 import { getFirstLine } from "../../common/common";
+import { useDispatch } from "react-redux";
+import { urlEndPoint } from "../../http/apiConfig";
 
 const Published = () => {
+  const dispatch =useDispatch()
   const [news, setNews] = useState([]);
   const filteredNews = news.filter((item) => item?.newsStatus === "approved");
 
   const getNews = async () => {
     try {
-      const res = await fetchData("/news", "get");
+      const url =urlEndPoint.getnewsbyJournalist
+      const res = await networkRequest({url},dispatch);
       setNews(res?.news);
     } catch (error) {
       console.error(error);

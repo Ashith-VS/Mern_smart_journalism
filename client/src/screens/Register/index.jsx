@@ -2,35 +2,38 @@ import { isEmpty } from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { RegisterUserAuth } from "../../Redux/Action/AuthenticationAction";
+import { currentUserAuth, RegisterUserAuth } from "../../Redux/Action/AuthenticationAction";
 import { AUTH_CREATE_FAILURE } from "../../common/constant";
 import Modal from "react-modal";
-import fetchData from "../../http/api";
+import networkRequest from "../../http/api";
 import { customStyles } from "../../common/common";
 
 const Register = () => {
   const { id } = useParams();
   const { getmediaAdmin } = useSelector((state) => state.NewsReducer);
   const token = localStorage.getItem("auth_token");
-  // console.log('token: ', token);
   const [user, setUser] = useState([]);
 
+  useEffect(() => {
+    if (token && isEmpty(currentUser)) {
+      dispatch(currentUserAuth());
+    } 
+  }, []);
+
   const getJournalists = async () => {
-    const res = await fetchData("/journalist", "get");
+    const res = await networkRequest("/journalist/journalist", "get");
     setUser(res?.user);
   };
 
   useEffect(() => {
-    if (isEmpty(token)) {
+    if (isEmpty(token)&& currentUser?.role=== "mediaAdmin") {
       getJournalists();
     }
   }, [token]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { currentUser, AuthFailure } = useSelector(
-    (state) => state.AuthenticationReducer
-  );
+  const { currentUser, AuthFailure } = useSelector((state) => state.AuthenticationReducer);
   const [ModalOpen, setModalOpen] = useState(false);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -134,11 +137,12 @@ const Register = () => {
     } else {
       const submitData = {
         ...formData,
-        ...(currentUser?.role === "mediaAdmin" && {
-          mediaAdmin: currentUser?._id,
+        ...((currentUser?.role === "superAdmin"||currentUser?.role === "mediaAdmin" )&& {
+          parent: currentUser?._id,
+          mustResetPassword: true
         }),
       };
-      await dispatch(RegisterUserAuth(submitData, navigate, setModalOpen));
+    await dispatch(RegisterUserAuth(submitData, navigate, setModalOpen));
     }
   };
 
@@ -171,16 +175,7 @@ const Register = () => {
     });
   }, [id, currentUser]);
 
-  const handleUpdate = async () => {
-    const submitData = {
-      ...formData,
-      ...(currentUser?.role === "mediaAdmin" && {
-        mediaAdmin: currentUser?._id,
-      }),
-    };
-    // console.log('formData: ', submitData);
-    //  await dispatch(RegisterUserAuth(submitData,navigate,setModalOpen))
-  };
+  
 
   return (
     <section
@@ -225,12 +220,13 @@ const Register = () => {
                     </h4>
                   )}{" "}
                 </div>
-                <form onSubmit={id ? handleUpdate : handleSubmit}>
+                <form onSubmit={handleSubmit}>
                   {inputs.map((item, i) => renderedInputs(item, i))}
-                  {currentUser !== null && (
+
+                  {!isEmpty(currentUser)&& (
                     <div className="form-outline mb-4">
                       <label className="form-label" htmlFor={"role"}>
-                        Media
+                        Role
                       </label>
                       <input
                         id="role"
@@ -243,10 +239,11 @@ const Register = () => {
                   )}
                   <div className="d-flex justify-content-end ">
                     <button className="btn btn-primary mb-3" type="submit">
-                      {id ? "Update" : "Submit"}
+                      Submit
                     </button>
                   </div>
                 </form>
+
                 {currentUser?.role !== "superAdmin" &&
                   currentUser?.role !== "mediaAdmin" && (
                     <div className="text-center">

@@ -3,18 +3,20 @@ import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import Sidebar from '../../components/Sidebar'
 import { isEmpty } from 'lodash'
-import { useSelector } from 'react-redux'
-import fetchData from '../../http/api'
+import { useDispatch, useSelector } from 'react-redux'
+import networkRequest from '../../http/api'
 import { useParams } from 'react-router-dom'
 import Modal from 'react-modal';
 import { customStyles } from '../../common/common'
+import { urlEndPoint } from '../../http/apiConfig'
 
 const Journalist = () => {
+const dispatch =useDispatch()
 const {id}=useParams()
-
 
 const [loginModalOpen, setLoginModalOpen] = useState(false);
     const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
+    const [modalcontent,setModalContent]=useState({})
     const [news,setNews]=useState([])
     const[error,setError] =useState({})
     const [formData, setFormData] = useState({
@@ -28,15 +30,19 @@ const [loginModalOpen, setLoginModalOpen] = useState(false);
     });
     const getNews = async () => {
       try {
-        const res = await fetchData("/news", "get");
+        const url =urlEndPoint.getnewsbyJournalist
+        const res = await networkRequest({url},dispatch);
         setNews(res?.news);
+        const urls=urlEndPoint.getdraftNewss(currentUser?._id)
+        const resdrafts=await networkRequest({url:urls},dispatch);
+        setNews(resdrafts?.drafts)
       } catch (error) {
         console.error(error);
       }
     };
 
 const filteredNewsId = news.find(data=>data._id ===id)
-console.log('filteredNewsId: ', filteredNewsId);
+
     useEffect(()=>{
       if (id){
         getNews()
@@ -54,8 +60,6 @@ console.log('filteredNewsId: ', filteredNewsId);
         newsStatus: filteredNewsId?.newsStatus ||""
       })
     }, [news,id])
-
-    
 
       const handleChange = (e) => {
         const { name, value} = e.target;
@@ -92,19 +96,18 @@ console.log('filteredNewsId: ', filteredNewsId);
                     form.append("photos", file);
                 });
                // Upload images and get the response with image URLs
-               const response =    await fetchData("/multipleimg", "post", form, { 'Content-Type': 'multipart/form-data' });
+               const url=urlEndPoint.imageUpload
+               const response = await networkRequest({url, method:"post", data:form, headers:{ 'Content-Type': 'multipart/form-data' }},dispatch);
               imageUrls = response?.newImages
             }
             const submitData={
               ...formData,
               author:currentUser?._id,
               images:imageUrls,
-              parent:currentUser?.mediaAdmin
           }
-          // console.log('submitData: ', submitData);
-            // Submit form data
-            await fetchData("/news", "post", submitData);
-                // Reset form data
+          const url =urlEndPoint.getnewsbyJournalist
+            await networkRequest({url, method:"post", data:submitData},dispatch);
+              
             setFormData({
               category: '',
               location: '',
@@ -120,23 +123,21 @@ console.log('filteredNewsId: ', filteredNewsId);
 
       const handleUpdate=async(e)=>{
         e.preventDefault();
-        console.log(formData)
         const valid = handleValidation();
         if (!isEmpty(valid)) {
             setError(valid);
         } else {
             try {
                 let imageUrls = [];
-    
                 // If images are selected, handle image upload
                 if (formData.images && formData.images.length > 0) {
                     const form = new FormData();
                     formData.images.forEach(file => {
                         form.append("photos", file);
                     });
-    
                     // Upload images and get the response with image URLs
-                    const response = await fetchData("/multipleimg", "post", form, { 'Content-Type': 'multipart/form-data' });
+                    const url=urlEndPoint.imageUpload
+                    const response = await networkRequest({url, method:"post", data:form, headers:{ 'Content-Type': 'multipart/form-data' }},dispatch);
                     imageUrls = response?.newImages;
                 }
     
@@ -144,16 +145,12 @@ console.log('filteredNewsId: ', filteredNewsId);
                   ...formData,
                   author: currentUser?._id,
                   images: imageUrls,
-                  parent: currentUser?.mediaAdmin,
                   newsStatus: "pending"
                 };
-                // console.log('submitData: ', submitData);
-    
                 // Update news data
-                await fetchData(`/news/${id}`, "put", submitData);
+                const url =urlEndPoint.updateNews(id)
+                await networkRequest({url, method:"put", data:submitData},dispatch);
                 setLoginModalOpen(true);
-         
-    
                 // Reset form data after successful update
                 setFormData({
                     category: '',
@@ -168,6 +165,42 @@ console.log('filteredNewsId: ', filteredNewsId);
             } catch (error) {
                 console.error(error.message);
             }
+        }
+      }
+     
+      
+      const handleDraftNews = async(e)=>{
+        e.preventDefault();
+        if (
+          !formData.title.trim() &&
+          !formData.content.trim() &&
+          !formData.category.trim() &&
+          !formData.location.trim() &&
+          (formData.images.length === 0 || !formData.images) &&
+          !formData.video.trim()
+      ) {
+        setLoginModalOpen(true)
+        setModalContent('At least one field must be filled for the draft.')
+          return;
+      }
+        try {
+          const submitDatas={...formData,draftedby:currentUser?._id}
+          const url =urlEndPoint.addDraftNews
+          const res=await networkRequest({url,method:"post",data:{submitDatas}},dispatch)
+         if(res.status){
+           setLoginModalOpen(true)
+           setModalContent(res?.message)
+           setFormData({
+             category: '',
+             location: '',
+             title: '',
+             images: [],
+             video: '',
+             content: '',
+           })
+         }
+        } catch (error) {
+          console.error(error)
         }
       }
 
@@ -259,7 +292,8 @@ console.log('filteredNewsId: ', filteredNewsId);
                       ></textarea>
                        <span style={{color:"red",fontSize:'14px'}}>{error?.content}</span>
                     </div>
-                    <button type="submit" className="btn btn-primary">{id?'Update':'Submit'}</button>
+                    <button type="button" className="btn btn-secondary mx-3" onClick={handleDraftNews}>Draft</button>
+                    <button type="submit" className="btn btn-primary">Submit</button>
                   </form>
                 </div>
               </div>
@@ -272,7 +306,7 @@ console.log('filteredNewsId: ', filteredNewsId);
         <div className="modal-content align-items-center justify-content-center p-5">
           <div className="modal-body text-center">
             <h5 className="modal-title mb-4"></h5>
-            <p>News updated Successfully</p>
+            <p>{modalcontent?modalcontent:'News updated Successfully'}</p>
             <div className="modal-footer mt-5 p-2">
               <button className="btn btn-secondary mx-2" onClick={() => setLoginModalOpen(false)}>Cancel</button>
             </div>

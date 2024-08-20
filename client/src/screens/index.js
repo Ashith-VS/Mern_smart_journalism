@@ -19,6 +19,8 @@ import EditProfile from "./profile/EditProfile"
 import Unauthorized from "./Unauthorised"
 import PageNotFound from "./PageNotFound"
 import Draft from "./Journalist/Draft"
+import DeletedJournalist from "./MediaAdmin/DeletedJournalist"
+import DeletedMediaAdmins from "./SuperAdmin/DeletedMediaAdmins"
 
 export {
     Home,
@@ -40,6 +42,8 @@ export {
     NewsRejected,
     AllNews,
     Draft,
+    DeletedJournalist,
+    DeletedMediaAdmins,
     Unauthorized,
     PageNotFound
 }

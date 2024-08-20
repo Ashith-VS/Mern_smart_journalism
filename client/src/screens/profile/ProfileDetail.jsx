@@ -2,25 +2,13 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { GET_CURRENT_USER } from '../../common/constant'
-import fetchData from '../../http/api'
+import { LogOutUserAuth } from '../../Redux/Action/AuthenticationAction'
 
 const ProfileDetail = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
-
-      const handleLogout=async()=>{
-        try {
-          const res = await fetchData("/logout","get")
-          console.log('res: ', res);
-          // localStorage.clear();
-          localStorage.removeItem('auth_token');
-          dispatch({type:GET_CURRENT_USER, payload:null})
-         navigate('/')
-        } catch (error) {
-          console.error(error)
-        }
-      }
+    const isDisabled = currentUser?.mustResetPassword;
 
   return (
      <div className="row">
@@ -42,8 +30,12 @@ const ProfileDetail = () => {
                 <h5 className="card-title">{currentUser?.name}</h5>
                 <p className="card-text"><strong>Email :</strong>  {currentUser?.email}</p>
                 <p className="card-text"><strong>Phone :</strong>  {currentUser?.mobile}</p>
-                <Link to="/profile/edit" className="btn btn-primary">Edit Profile</Link>
-                <button  className="btn btn-secondary mx-3" onClick={handleLogout}>Logout</button>
+      {isDisabled ? (
+        <span className="btn btn-primary disabled">Edit Profile</span>
+      ) : (
+        <Link to="/profile/edit" className="btn btn-primary">Edit Profile</Link>
+      )}
+                <button  className="btn btn-secondary mx-3" onClick={()=>dispatch(LogOutUserAuth(navigate))} disabled={currentUser?.mustResetPassword}>Logout</button>
               </div>
             </div>
           </div>

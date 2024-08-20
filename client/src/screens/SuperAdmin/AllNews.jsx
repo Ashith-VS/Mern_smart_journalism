@@ -2,18 +2,22 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
-import fetchData from '../../http/api';
+import networkRequest from '../../http/api';
 import { getFirstLine } from '../../common/common';
 import { Link, useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
+import { urlEndPoint } from '../../http/apiConfig';
+import { useDispatch } from 'react-redux';
 
 const AllNews = () => {
-    const {id}=useParams()
-    const[news,setNews] =useState([])
+  const dispatch =useDispatch()
+const {id}=useParams()
+const[news,setNews] =useState([])
 
 const getAllNews=async()=>{
+  const url =urlEndPoint.getAllNewsCreate
   try {
-    const res= await fetchData("/allNewss","get") 
+    const res= await networkRequest({url},dispatch) 
     setNews(res?.news)
   } catch (error) {
     console.error(error)

@@ -3,22 +3,24 @@ import Navbar from '../../components/Navbar'
 import Sidebar from '../../components/Sidebar'
 import Footer from '../../components/Footer'
 import Modal from 'react-modal';
-import fetchData from '../../http/api';
-import { isEmpty } from 'lodash';
+import networkRequest from '../../http/api';
+import { isEmpty, method } from 'lodash';
 import { customStyles } from '../../common/common';
+import { urlEndPoint } from '../../http/apiConfig';
+import { useDispatch } from 'react-redux';
 
 const NewsStatus = () => {
-
-  const token=localStorage.getItem('auth_token');
-    // console.log('token: ', token);
+const dispatch =useDispatch()
+    const token=localStorage.getItem('auth_token');
     const [selectedNews, setSelectedNews] = useState({});
     const [ModalOpen, setModalOpen] = useState(false);
     const [newsData, setNewsData] = useState([]);
    
     const getNewsData=async()=>{
       try {
+        const url =urlEndPoint.getMediaAdminAllNews
         if(!isEmpty(token)){
-          const res=await fetchData("/allnews","get")
+          const res=await networkRequest({url},dispatch)
           setNewsData(res?.news)
         }
       } catch (error) {
@@ -27,13 +29,12 @@ const NewsStatus = () => {
     }
 
 useEffect(()=>{
-    getNewsData()
+getNewsData()
 },[])
 
-const filteredNewsData = newsData.filter((item)=>item.newsStatus=== "pending")
-// console.log('filteredNewsData: ', filteredNewsData);
+const filteredNewsData = newsData.filter((item)=>{
+  return item.newsStatus=== "pending"})
 
-      
     const handleView=(id)=>{
    const filteredNews=newsData.find((item)=>item?._id === id)
    setSelectedNews(filteredNews)
@@ -41,15 +42,15 @@ const filteredNewsData = newsData.filter((item)=>item.newsStatus=== "pending")
     }
 
       const handleReject=async(id)=>{
-        const res =await fetchData(`/rejected/${id}`,"post",{newsStatus:'rejected'})
-        // console.log('res: ', res);
+        const url =urlEndPoint.rejectedNews(id)
+        const res =await networkRequest({url,method:"post",data:{newsStatus:'rejected'}},dispatch)
         setModalOpen(false)
         await getNewsData()
       }
 
       const handleApprove=async(id)=>{
-        const res =await fetchData(`/approved/${id}`,"post",{newsStatus:'approved'})
-        // console.log('res: ', res);
+        const url =urlEndPoint.approvedNews(id)
+        const res =await networkRequest({url,method:"post",data:{newsStatus:'approved'}},dispatch)
         setModalOpen(false)
         await getNewsData()
       }

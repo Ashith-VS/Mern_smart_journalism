@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 import Footer from "../../components/Footer";
-import fetchData from "../../http/api";
-import { isEmpty } from "lodash";
+import networkRequest from "../../http/api";
+import { isEmpty} from "lodash";
 import Modal from "react-modal";
 import { customStyles } from "../../common/common";
+import { urlEndPoint } from "../../http/apiConfig";
+import { useDispatch } from "react-redux";
 
 const NewsApproved = () => {
+  const dispatch = useDispatch();
   const token = localStorage.getItem("auth_token");
   const [selectedNews, setSelectedNews] = useState({});
   const [ModalOpen, setModalOpen] = useState(false);
@@ -15,8 +18,9 @@ const NewsApproved = () => {
 
   const getNewsData = async () => {
     try {
+      const url =urlEndPoint.getMediaAdminAllNews
       if (!isEmpty(token)) {
-        const res = await fetchData("/allnews", "get");
+        const res = await networkRequest({url},dispatch);
         setNewsData(res?.news);
       }
     } catch (error) {
@@ -40,9 +44,8 @@ const NewsApproved = () => {
   };
 
   const handleReject = async (id) => {
-    const res = await fetchData(`/rejected/${id}`, "post", {
-      newsStatus: "rejected",
-    });
+    const url =urlEndPoint.rejectedNews(id)
+    const res = await networkRequest({url, method:"post", data:{newsStatus: "rejected"}},dispatch);
     setModalOpen(false);
     await getNewsData();
   };

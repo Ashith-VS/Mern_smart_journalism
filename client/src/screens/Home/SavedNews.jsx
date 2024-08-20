@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { imagePath } from '../../common/common';
 import saveIcon from "../../assets/images/save-instagram.png"
 import savedIcon from "../../assets/images/bookmark.png"
-import fetchData from '../../http/api';
+import networkRequest from '../../http/api';
 import { isEmpty } from 'lodash';
+import { urlEndPoint } from '../../http/apiConfig';
 
 const SavedNews = () => {
+    const dispatch =useDispatch()
     const {currentUser} = useSelector((state)=>state.AuthenticationReducer)
-    // console.log('currentUser: ', currentUser);
     const [savedNews, setSavedNews] = useState([]);
     const [savedItems, setSavedItems] = useState({});
     const token=localStorage.getItem('auth_token');
     
   const fetchSavedNews=async()=>{
+    const url = urlEndPoint.getsaved(currentUser?._id)
     try {
-      const res = await fetchData(`/savedNews/${currentUser?._id}`,"get")
+      const res = await networkRequest({url},dispatch)
       setSavedNews(res?.savedNews);
       setSavedItems(res?.savedNews.reduce((acc, news) => {
         acc[news._id] = news;
@@ -37,7 +39,8 @@ const SavedNews = () => {
       const handleRemoveSavedNews=async(newsId)=>{
         if(currentUser){
             try {
-              const res = await fetchData('/savednews', 'post', {userId: currentUser?._id,newsId });
+              const url =urlEndPoint.addsavedNews
+              const res = await networkRequest({url, method:'post', data:{userId: currentUser?._id,newsId }},dispatch);
               if(res.status){
             setSavedItems({...savedItems,[newsId]:true});
             fetchSavedNews();
@@ -51,7 +54,6 @@ const SavedNews = () => {
           }
     }
        
-   
     return (
         <div>
             <Navbar />

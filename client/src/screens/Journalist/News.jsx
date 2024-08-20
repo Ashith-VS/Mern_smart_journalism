@@ -3,15 +3,19 @@ import { Link } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
-import fetchData from "../../http/api";
+import networkRequest from "../../http/api";
 import { getFirstLine } from "../../common/common";
+import { urlEndPoint } from "../../http/apiConfig";
+import { useDispatch } from "react-redux";
 
 const News = () => {
+  const dispatch = useDispatch()
   const [news, setNews] = useState([]);
 
   const getNews = async () => {
     try {
-      const res = await fetchData("/news", "get");
+      const url =urlEndPoint.getnewsbyJournalist
+      const res = await networkRequest({url},dispatch);
       setNews(res?.news);
     } catch (error) {
       console.error(error);

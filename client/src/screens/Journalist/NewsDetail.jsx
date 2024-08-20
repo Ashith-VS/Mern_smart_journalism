@@ -2,20 +2,22 @@ import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
-import fetchData from "../../http/api";
+import networkRequest from "../../http/api";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { urlEndPoint } from "../../http/apiConfig";
 
 const NewsDetail = () => {
+  const dispatch =useDispatch()
   const navigate = useNavigate()
   const [news, setNews] = useState([]);
-
   const { id } = useParams();
   const filteredNews = news.find((item) => item?._id === id);
 
-
   const getNews = async () => {
     try {
-      const res = await fetchData("/news", "get");
+      const url =urlEndPoint.getnewsbyJournalist
+      const res = await networkRequest({url},dispatch);
       setNews(res?.news);
     } catch (error) {
       console.error(error);
@@ -25,8 +27,6 @@ const NewsDetail = () => {
   useEffect(() => {
     getNews();
   }, []);
-
-
 
   return (
     <div>

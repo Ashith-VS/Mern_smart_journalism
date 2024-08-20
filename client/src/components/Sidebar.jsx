@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
-  // console.log('currentUser: ', currentUser);
+
   return (
     <div className="d-flex flex-column bg-light vh-100 "style={{padding:"30px"}}>
       <h3 className="p-3">{currentUser?.role==="Journalist"?"Journalist Menu":"Dashboard"}</h3>
@@ -19,6 +19,9 @@ const Sidebar = () => {
         </li>
         <li className="nav-item">
           <Link className="nav-link" to="/admin/allnews">All News</Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/admin/deleted">Deleted MediaAdmins</Link>
         </li>
         </>}
 
@@ -39,6 +42,9 @@ const Sidebar = () => {
         <li className="nav-item">
           <Link className="nav-link" to="/mediaAdmin/rejected">News Rejected</Link>
         </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/mediaAdmin/deleted">Deleted Journalist</Link>
+        </li>
         </>}
         {currentUser?.role === "Journalist"&&
         <>
@@ -52,7 +58,7 @@ const Sidebar = () => {
           <Link className="nav-link" to="/journalist/published">Published News</Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/journalist/draft">Draft News</Link>
+          <Link className="nav-link" to="/draft">Draft News</Link>
         </li>
         </>}
       </ul>
