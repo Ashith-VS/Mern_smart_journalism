@@ -2,38 +2,67 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import Sidebar from '../../components/Sidebar'
-import { useSelector } from 'react-redux'
-import fetchData from '../../http/api'
+import { useDispatch, useSelector } from 'react-redux'
+import networkRequest from '../../http/api'
 import { isEmpty } from 'lodash'
+import Modals from '../../components/Modals'
+import { urlEndPoint } from '../../http/apiConfig'
 
 const MediaAdmin = () => {
+  const dispatch = useDispatch();
   const[user,setUser]=useState([])
   const {currentUser} = useSelector((state)=> state.AuthenticationReducer)
+  const [modalOpen,setModalOpen] = useState(false)
+  const [selected,setSelected]=useState(null)
   const token=localStorage.getItem('auth_token');
   
   const getJournalists = async () => {
     if (!isEmpty(token)) {
+      const url =urlEndPoint.getJournals
       try {
-        const res = await fetchData('/journalist', 'GET');
-        setUser(res?.user);
+        const res = await networkRequest({url},dispatch);
+        // console.log('res: ', res);
+        setUser(res?.users);
       } catch (error) {
         console.error('Error fetching journalists:', error);
       }
     }
   };
+  
   useEffect(() => {
     getJournalists()
   },[])
 
-  const handleDeleteJournalist = async (id) => {
+  
+  const handleBlockAndUnblock= async (id) => {
+    const url = urlEndPoint.blockJournals(id)
     try {
-      const res = await fetchData(`/journalist/${id}`, 'delete')
-      // console.log('res: ', res);
+      await networkRequest({url,method:'patch'},dispatch);
+      setModalOpen(false)
       await getJournalists()
     } catch (error) {
       console.error(error)
     }
   }
+
+  const handleOpenModal = async (id) => {
+    setModalOpen(true)
+    setSelected(id)
+  }
+
+  const handleDeleteJournalist = async () => {
+    if(selected){
+      const url =urlEndPoint.deleteJournalistData(selected)
+    try {
+     await networkRequest({url,method:'patch'},dispatch)
+      await getJournalists()
+      setModalOpen(false)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  }
+ 
   
     return (
         <div>
@@ -61,15 +90,16 @@ const MediaAdmin = () => {
                         <td>{event?.email}</td>
                         <td>{event?.mobile}</td> 
                         <td>
-                          {/* <button 
-                            className="btn btn-primary btn-sm" 
-                            // onClick={() =>navigate(`/register/${event?._id}`)}
-                          >
-                            Edit
-                          </button> */}
+                          
                           <button 
-                            className="mx-2 btn btn-secondary btn-sm" 
-                            onClick={() => handleDeleteJournalist(event?._id)}
+                            className="mx-2 btn btn-danger btn-sm" 
+                            onClick={()=> handleBlockAndUnblock(event?._id)}
+                          >
+                            {event?.blocked === true ? "InActive" : "Active"}
+                          </button>
+                          <button 
+                            className="mx-2 btn btn-primary btn-sm" 
+                            onClick={() => handleOpenModal(event?._id)}
                           >
                           Delete
                           </button>
@@ -83,8 +113,9 @@ const MediaAdmin = () => {
           </div>
         </div>
       </div>
-            <Footer />
-        </div>
+      <Footer />
+      <Modals modalOpen={modalOpen} setModalOpen={setModalOpen} handleDeleteJournalist={handleDeleteJournalist}/>
+      </div>
     )
 }
 

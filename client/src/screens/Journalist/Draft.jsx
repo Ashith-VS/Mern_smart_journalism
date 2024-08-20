@@ -2,19 +2,22 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar'
 import Sidebar from '../../components/Sidebar'
 import Footer from '../../components/Footer'
-import fetchData from '../../http/api'
-import { useSelector } from 'react-redux'
+import networkRequest from '../../http/api'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { getFirstLine } from '../../common/common'
+import { urlEndPoint } from '../../http/apiConfig'
 
 
 const Draft = () => {
+  const dispatch =useDispatch()
     const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
     const [draftNews, setDraftNews] = useState([])
 
     const getDraft = async() =>{
         try {
-            const res = await fetchData(`/draftnews/${currentUser?._id}`,'get')
+          const url =urlEndPoint.getdraftNewss(currentUser?._id)
+            const res = await networkRequest({url},dispatch)
           setDraftNews(res?.drafts)
         } catch (error) {
             console.error(error)

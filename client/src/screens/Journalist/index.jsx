@@ -3,22 +3,21 @@ import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import Sidebar from '../../components/Sidebar'
 import { isEmpty } from 'lodash'
-import { useSelector } from 'react-redux'
-import fetchData from '../../http/api'
+import { useDispatch, useSelector } from 'react-redux'
+import networkRequest from '../../http/api'
 import { useParams } from 'react-router-dom'
 import Modal from 'react-modal';
 import { customStyles } from '../../common/common'
+import { urlEndPoint } from '../../http/apiConfig'
 
 const Journalist = () => {
+const dispatch =useDispatch()
 const {id}=useParams()
-console.log('id: ', id);
-
 
 const [loginModalOpen, setLoginModalOpen] = useState(false);
     const {currentUser}=useSelector((state)=>state.AuthenticationReducer)
     const [modalcontent,setModalContent]=useState({})
     const [news,setNews]=useState([])
-    console.log('news: ', news);
     const[error,setError] =useState({})
     const [formData, setFormData] = useState({
         category: '',
@@ -31,11 +30,11 @@ const [loginModalOpen, setLoginModalOpen] = useState(false);
     });
     const getNews = async () => {
       try {
-        const res = await fetchData("/news", "get");
+        const url =urlEndPoint.getnewsbyJournalist
+        const res = await networkRequest({url},dispatch);
         setNews(res?.news);
-        const resdrafts=await fetchData(`/draftnews/${currentUser._id}`,'get')
-        console.log('resdrafts: ', resdrafts);
- 
+        const urls=urlEndPoint.getdraftNewss(currentUser?._id)
+        const resdrafts=await networkRequest({url:urls},dispatch);
         setNews(resdrafts?.drafts)
       } catch (error) {
         console.error(error);
@@ -61,8 +60,6 @@ const filteredNewsId = news.find(data=>data._id ===id)
         newsStatus: filteredNewsId?.newsStatus ||""
       })
     }, [news,id])
-
-    
 
       const handleChange = (e) => {
         const { name, value} = e.target;
@@ -99,19 +96,18 @@ const filteredNewsId = news.find(data=>data._id ===id)
                     form.append("photos", file);
                 });
                // Upload images and get the response with image URLs
-               const response =    await fetchData("/multipleimg", "post", form, { 'Content-Type': 'multipart/form-data' });
+               const url=urlEndPoint.imageUpload
+               const response = await networkRequest({url, method:"post", data:form, headers:{ 'Content-Type': 'multipart/form-data' }},dispatch);
               imageUrls = response?.newImages
             }
             const submitData={
               ...formData,
               author:currentUser?._id,
               images:imageUrls,
-              parent:currentUser?.mediaAdmin
           }
-          // console.log('submitData: ', submitData);
-            // Submit form data
-            await fetchData("/news", "post", submitData);
-                // Reset form data
+          const url =urlEndPoint.getnewsbyJournalist
+            await networkRequest({url, method:"post", data:submitData},dispatch);
+              
             setFormData({
               category: '',
               location: '',
@@ -127,23 +123,21 @@ const filteredNewsId = news.find(data=>data._id ===id)
 
       const handleUpdate=async(e)=>{
         e.preventDefault();
-        console.log(formData)
         const valid = handleValidation();
         if (!isEmpty(valid)) {
             setError(valid);
         } else {
             try {
                 let imageUrls = [];
-    
                 // If images are selected, handle image upload
                 if (formData.images && formData.images.length > 0) {
                     const form = new FormData();
                     formData.images.forEach(file => {
                         form.append("photos", file);
                     });
-    
                     // Upload images and get the response with image URLs
-                    const response = await fetchData("/multipleimg", "post", form, { 'Content-Type': 'multipart/form-data' });
+                    const url=urlEndPoint.imageUpload
+                    const response = await networkRequest({url, method:"post", data:form, headers:{ 'Content-Type': 'multipart/form-data' }},dispatch);
                     imageUrls = response?.newImages;
                 }
     
@@ -151,16 +145,12 @@ const filteredNewsId = news.find(data=>data._id ===id)
                   ...formData,
                   author: currentUser?._id,
                   images: imageUrls,
-                  parent: currentUser?.mediaAdmin,
                   newsStatus: "pending"
                 };
-                // console.log('submitData: ', submitData);
-    
                 // Update news data
-                await fetchData(`/news/${id}`, "put", submitData);
+                const url =urlEndPoint.updateNews(id)
+                await networkRequest({url, method:"put", data:submitData},dispatch);
                 setLoginModalOpen(true);
-         
-    
                 // Reset form data after successful update
                 setFormData({
                     category: '',
@@ -195,7 +185,8 @@ const filteredNewsId = news.find(data=>data._id ===id)
       }
         try {
           const submitDatas={...formData,draftedby:currentUser?._id}
-          const res=await fetchData('/draftnews',"post",{submitDatas})
+          const url =urlEndPoint.addDraftNews
+          const res=await networkRequest({url,method:"post",data:{submitDatas}},dispatch)
          if(res.status){
            setLoginModalOpen(true)
            setModalContent(res?.message)
@@ -211,7 +202,6 @@ const filteredNewsId = news.find(data=>data._id ===id)
         } catch (error) {
           console.error(error)
         }
-      
       }
 
 

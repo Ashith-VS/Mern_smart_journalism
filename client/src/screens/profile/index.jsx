@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { GET_CURRENT_USER } from "../../common/constant";
 import { isEmpty } from "lodash";
-import fetchData from "../../http/api";
 import Modal from "react-modal";
 import { customStyles } from "../../common/common";
 import ProfileDetail from "./ProfileDetail";
+import networkRequest from "../../http/api";
+import { urlEndPoint } from "../../http/apiConfig";
+
 
 const Profile = () => {
+  const {currentUser}=useSelector(state=>state.AuthenticationReducer)
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -21,6 +24,7 @@ const Profile = () => {
     newPassword: "",
     confirmNewPassword: "",
   });
+ 
 
   const handleValidation = () => {
     let error = {};
@@ -53,17 +57,38 @@ const Profile = () => {
     if (!isEmpty(valid)) {
       setError(valid);
     } else {
-      // console.log('formData: ', formData);
       try {
-        const res = await fetchData("/changePassword", "post", { formData });
-        // console.log('res: ', res);
+        if(currentUser?.role === 'mediaAdmin'||currentUser?.role === 'Journalist'){
+          const url =urlEndPoint.changePassword
+          const submitFormData = {...formData,mustResetPassword: false}
+      const res = await networkRequest({url,method: 'post',data:submitFormData},dispatch)
+      if(res.status){
+        switch(currentUser?.role) {
+          case 'superAdmin':
+              navigate("/admin");
+              break;
+          case 'mediaAdmin':
+              navigate("/mediaAdmin");
+              break;
+          case 'Journalist':
+              navigate("/journalist");
+              break;
+          default:
+              navigate("/"); 
+              break;
+      }
+      }
+        }else{
+          const url =urlEndPoint.changePassword
+        const res = await networkRequest({url,method:"post",data:formData},dispatch);
         if (res) {
           localStorage.clear();
           dispatch({ type: GET_CURRENT_USER, payload: null });
           navigate("/login");
         }
+       }
       } catch (error) {
-        // console.error(error.message)
+        console.error(error.message)
         setApiError(error.message);
       }
     }

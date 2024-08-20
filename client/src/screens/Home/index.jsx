@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
-import fetchData from '../../http/api';
+import networkRequest from '../../http/api';
 import { customStyles, imagePath } from '../../common/common';
 import saveIcon from "../../assets/images/save-instagram.png"
 import savedIcon from "../../assets/images/bookmark.png"
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import Pagination from '../../components/Pagination';
 import moment from 'moment';
+import { urlEndPoint } from '../../http/apiConfig';
+import { getAllNewsData } from '../../Redux/Action/PublicAction';
 
 const Home = () => {
+  const dispatch =useDispatch()
   const token =localStorage.getItem('auth_token');
   const navigate =useNavigate()
   const {currentUser} =useSelector((state) =>state.AuthenticationReducer)
@@ -29,33 +32,32 @@ const Home = () => {
 const [page, setPage] = useState(1);
 const [totalPages, setTotalPages] = useState(0);
 const [limit, setLimit] = useState(3); 
-  
-  const getNewsData = async () => {
-    try {
-      const res = await fetchData(`/latestNews?page=${page}&limit=${limit}&sortOrder=${sortOrder}`, 'get');
-      setNewsData(res?.news || []);
-      setTotalPages(res?.Pagination?.totalPages||0)
-      const uniqueCategories = [...new Set(res?.news.map((item) => item.category))];
-      setCategories(uniqueCategories);
-    } catch (error) {
-      console.error('Error fetching news data:', error);
-    }
-  };
+
+const {latestNews} =useSelector(state=>state.PublicReducer)
+
+useEffect(()=>{
+  dispatch(getAllNewsData(page, limit, sortOrder));
+},[page,sortOrder])
+
+useEffect(() => {
+  if (latestNews && latestNews.news) {
+    setNewsData(latestNews.news);
+    setTotalPages(latestNews.page?.totalPages || 0);
+    // Extract unique categories from the news data
+    const uniqueCategories = [...new Set(latestNews.news.map((item) => item.category))];
+    setCategories(uniqueCategories);
+  }
+}, [latestNews]);
 
   const getAllMedia = async () => {
+    const url = urlEndPoint.media
     try {
-      const res = await fetchData('/media', 'get');
-      // const data= await fetchData('/category','get')
-      // setCategories(data?.categories);
+      const res = await networkRequest({url},dispatch);
       setMedia(res?.media || []);
     } catch (error) {
       console.error('Error fetching media data:', error);
     }
   };
-
-  useEffect(() => {
-    getNewsData();
-  }, [page,sortOrder]);
 
   useEffect(() => {
     getAllMedia();
@@ -64,13 +66,10 @@ const [limit, setLimit] = useState(3);
   
   const handleMediaSelect = async (data) => {
     setSelectedCategory(data?.name);
+    const url = urlEndPoint.filterNews(data?.id)
     try {
-      if(token){
-      const res = await fetchData(`/mediaNews/${data?.id}`, 'get');
-      // console.log('res: ', res);
-      // setNewsData(res?.news || []);
+      const res = await networkRequest({url},dispatch);
       setFilteredNewsData(res?.news || []);
-    }
     } catch (error) {
       console.error(error);
     }
@@ -84,11 +83,12 @@ const [limit, setLimit] = useState(3);
       setFilteredNewsData(newsData.filter((news) => news.category === selectedCategory));
     } 
   }, [newsData,selectedCategory]);
-
  
+
   const fetchSavedNews=async()=>{
+    const url =urlEndPoint.getsaved(currentUser?._id)
   try {
-    const res = await fetchData(`/savedNews/${currentUser?._id}`,"get")
+    const res = await networkRequest({url},dispatch)
     setSavedItems(res.savedNews.reduce((acc,curr)=>({...acc,[curr?._id]:true}),{}));
   } catch (error) {
     console.error(error);
@@ -104,12 +104,13 @@ fetchSavedNews()
 
 const handleSaveNews=async(newsId)=>{
   if(!isEmpty(currentUser)){
+    const url =urlEndPoint.addsavedNews
     try {
-        const res = await fetchData('/savednews', 'post', {userId: currentUser?._id,newsId });
+        const res = await networkRequest({url, method:'post', data:{userId: currentUser?._id,newsId} },dispatch);
         if(res.status){
           setSavedItems({...savedItems,[newsId]:true});
         }else{
-           setSavedItems({...savedItems,[newsId]:false});
+          setSavedItems({...savedItems,[newsId]:false});
         }
     } catch (error) {
       console.error('Error saving news:', error);
@@ -118,11 +119,6 @@ const handleSaveNews=async(newsId)=>{
    setLoginModalOpen(true);
   }
 }
-
-const handleSortChange = (e)=>{
-  setSortOrder(e.target.value)
-}
-
 
   return (
     <div>
@@ -161,7 +157,7 @@ const handleSortChange = (e)=>{
             name="sortOrder"
             className="form-select"
             value={sortOrder}
-            onChange={handleSortChange}
+            onChange={(e)=>setSortOrder(e.target.value)}
           >
             <option value="asc">Ascending by Date</option>
             <option value="desc">Descending by Date</option>
@@ -189,9 +185,7 @@ const handleSortChange = (e)=>{
                     <p>{article?.content?.substring(0, 50)}...</p>
                     <div><span>{moment(article?.publicationDate).format('DD-MM-YYYY')}</span></div>
                     <a href={`/news/${article?._id}`} className="read-more">Read More</a>
-                    {/* {(currentUser?.role === undefined || currentUser?.role === "user" || currentUser === null)&& */}
                     <button onClick={()=>handleSaveNews(article?._id)} className='btn'><img src={savedItems[article?._id]?savedIcon:saveIcon} alt='' className='img'/></button>
-                    {/* // } */}
                   </div>
                 </div>
               ))

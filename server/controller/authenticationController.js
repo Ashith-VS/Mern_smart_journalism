@@ -6,7 +6,7 @@ const { blacklistToken } = require('../middleware/VerifyMiddleware');
 
 const isRegister = async (req, res) => {
     try {
-        const { name, email, mobile, password, role, mediaAdmin } = req.body;
+        const { name, email, mobile, password, role, mediaAdmin, parent, mustResetPassword } = req.body.user;
         // Validate input (example validation)
         if (!name || !email || !mobile || !password) {
             return res.status(400).json({ status: 400, message: 'All fields are required' });
@@ -18,12 +18,11 @@ const isRegister = async (req, res) => {
         }
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new UserData({ name, email, mobile, password: hashedPassword, role, mediaAdmin });
+        const newUser = new UserData({ name, email, mobile, password: hashedPassword, role, mediaAdmin, parent, mustResetPassword });
         await newUser.save();
         res.status(201).json({ status: 200, message: 'User registered successfully' });
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ status: 500, message: 'Internal server error' });
+        res.status(500).json({ status: 500, message: error.message });
     }
 }
 
@@ -36,7 +35,6 @@ const isLogin = async (req, res) => {
         if (!passwordMatch) return res.status(400).json({ status: 400, message: 'Invalid credentials' });
         // Generate JWT token for the authenticated user
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' })
-        // console.log('token: ', token);
         // jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         //     if (err) return res.status(401).json({ error: 'Invalid or expired token' });
         //     // Proceed with request
@@ -63,15 +61,14 @@ const isCurrentUser = async (req, res) => {
 
 const isChangePassword = async (req, res) => {
     try {
-        //  console.log('verifytoken ', req.id);
-        const { currentPassword, newPassword } = req.body.formData;
+        //  console.log('verifytoken ', req.id);//req.id from header 
+        const { currentPassword, newPassword,mustResetPassword} = req.body;
+        
         const user = await UserData.findById(req.id);
-        // console.log('user: ', user);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
         const passwordMatch = await bcrypt.compare(currentPassword, user.password);
-        // console.log('passwordMatch: ', passwordMatch);
         if (!passwordMatch) {
             return res.status(401).json({ message: 'current password is incorrect' });
         }
@@ -81,8 +78,12 @@ const isChangePassword = async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         user.password = hashedPassword;
+     // Update mustResetPassword flag
+     if(user.mustResetPassword) {
+         user.mustResetPassword = mustResetPassword;
+     }
         await user.save();
-        res.status(200).json({ message: 'Password changed successfully' });
+        res.status(200).json({ status:true,message: 'Password changed successfully' });
     } catch (error) {
         console.log('error: ', error.message);
         res.status(500).json({ message: 'Error changing password' })

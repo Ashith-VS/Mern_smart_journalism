@@ -1,33 +1,63 @@
 import axios from "axios";
+import { showLoader } from "../Redux/Action/AuthenticationAction";
 
 export const baseURL = "http://localhost:4000";
 
-const fetchData = async (endpoint, method = 'GET', data = {}, headers = {}) => {
+let activeRequests = 0;
+
+const networkRequest = async ({ url, method = 'GET', data = {}, headers = {} }, dispatch) => {
+activeRequests++;
+dispatch(showLoader(true))
+
     const config = {
-        url: baseURL + endpoint,
+        url: baseURL + url,
         method: method.toUpperCase(),
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Accept-Language": "en",
             Authorization: localStorage.getItem('auth_token') ? `Bearer ${localStorage.getItem('auth_token')}` : null,
             ...headers,
         },
         data,
     };
+
     // console.log("config:", config);
 
+return new Promise(async(resolve, reject) => {
     try {
         const response = await axios(config);
-        return response.data;
+        resolve(response.data);
     } catch (error) {
-        if (error?.response) {
-            throw new Error(error?.response?.data?.message || 'An error occurred');
+        let errorMessage = 'An error occurred';
+        if (error.response) {
+            errorMessage = error.response.data.message || errorMessage;
+            if (error.response.status === 401 || error.response.status === 403) {
+                // Handle unauthorized access (e.g., logout user)
+                logout();
+            }
         } else if (error.request) {
-            throw new Error('No response received from server');
+            errorMessage = 'No response received from server';
         }
         else {
-            throw new Error(error.message);
+            errorMessage = error.message;
+        }
+        console.error(errorMessage); 
+        reject(new Error(errorMessage));
+    } finally {
+        activeRequests--;
+        console.log(`Request finished. Active requests: ${activeRequests}`);
+        if (activeRequests === 0) {
+            dispatch(showLoader(false));
         }
     }
+})
+}
+
+const logout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.clear();
+    window.location.reload();
 };
 
-export default fetchData;
+export default networkRequest;
